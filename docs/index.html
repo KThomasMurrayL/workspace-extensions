@@ -130,6 +130,7 @@
   .card:nth-child(1) { animation-delay: 0.05s; }
   .card:nth-child(2) { animation-delay: 0.15s; }
   .card:nth-child(3) { animation-delay: 0.25s; }
+  .card:nth-child(4) { animation-delay: 0.35s; }
 
   .card-icon {
     width: 56px;
@@ -145,6 +146,7 @@
   .card-icon.boards { background: linear-gradient(135deg, #0071e3, #47a0f5); }
   .card-icon.notes  { background: linear-gradient(135deg, #6e6e73, #a1a1a6); }
   .card-icon.flow   { background: linear-gradient(135deg, #7d3cf8, #bf5af2); }
+  .card-icon.database { background: linear-gradient(135deg, #0e7490, #22d3ee); }
 
   .card h2 {
     font-size: 26px;
@@ -376,7 +378,7 @@
   <div class="container narrow">
     <div class="eyebrow">VS Code Extensions</div>
     <h1>Workspace Extensions</h1>
-    <p>A growing collection of small extensions for planning, tracking and writing — everything saved as plain files in your own workspace.</p>
+    <p>A growing collection of small extensions for planning, tracking, writing and working with data — everything saved as plain files in your own workspace.</p>
     <div class="meta">
       <span>Plain JavaScript</span>·<span>No dependencies</span>·<span>Data stays in your repo</span>
     </div>
@@ -461,6 +463,30 @@
         </div>
         <div class="file-meta">flow-0.1.1.vsix · 15 KB</div>
       </article>
+      <article class="card">
+        <div class="card-icon database" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <ellipse cx="12" cy="5.2" rx="7.5" ry="2.8"/>
+            <path d="M4.5 5.2v6.2c0 1.55 3.36 2.8 7.5 2.8s7.5-1.25 7.5-2.8V5.2c0 1.55-3.36 2.8-7.5 2.8S4.5 6.75 4.5 5.2z"/>
+            <path d="M4.5 11.4v6.2c0 1.55 3.36 2.8 7.5 2.8s7.5-1.25 7.5-2.8v-6.2c0 1.55-3.36 2.8-7.5 2.8s-7.5-1.25-7.5-2.8z"/>
+          </svg>
+        </div>
+        <h2>Database</h2>
+        <p class="tagline">View and edit databases without leaving the editor.</p>
+        <ul class="features">
+          <li>SQLite, PostgreSQL, MySQL/MariaDB and SQL Server connections</li>
+          <li>Open CSV, TSV and JSON files as editable tables</li>
+          <li>Grid editing with paging, plus a SQL console for queries</li>
+          <li>Connections saved to <code>database/connections.json</code>; passwords in VS Code's secure storage</li>
+        </ul>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="downloads/database-0.1.0.vsix" download>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3v10.6l3.8-3.8 1.4 1.4L12 16.4l-5.2-5.2 1.4-1.4 3.8 3.8V3h2zM5 19h14v2H5v-2z"/></svg>
+            Download Database
+          </a>
+        </div>
+        <div class="file-meta">database-0.1.0.vsix · 23 MB (bundled drivers)</div>
+      </article>
 
     </div>
   </div>
@@ -483,12 +509,13 @@
           <button class="copy-btn" title="Copy">⧉</button>
           <pre>code --install-extension ~/Downloads/boards-0.2.0.vsix
 code --install-extension ~/Downloads/notes-0.2.0.vsix
-code --install-extension ~/Downloads/flow-0.1.1.vsix</pre>
+code --install-extension ~/Downloads/flow-0.1.1.vsix
+code --install-extension ~/Downloads/database-0.1.0.vsix</pre>
         </div>
       </li>
       <li>
         <strong>Reload and open a folder</strong>
-        <p>Run <em>Developer: Reload Window</em> from the Command Palette (⇧⌘P). The Boards, Notes and Flow icons appear in the activity bar of any folder you open.</p>
+        <p>Run <em>Developer: Reload Window</em> from the Command Palette (⇧⌘P). The Boards, Notes, Flow and Database icons appear in the activity bar of any folder you open.</p>
       </li>
     </ol>
 
@@ -504,7 +531,7 @@ code --install-extension ~/Downloads/flow-0.1.1.vsix</pre>
     <p>
       <a href="https://github.com/KThomasMurrayL/workspace-extensions">Source on GitHub</a>
       &nbsp;·&nbsp; MIT licensed
-      &nbsp;·&nbsp; Your boards, notes and flows live in your own repository
+      &nbsp;·&nbsp; Your boards, notes, flows and connections live in your own repository
     </p>
   </div>
 </footer>

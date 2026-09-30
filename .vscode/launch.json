@@ -26,13 +26,22 @@
       ]
     },
     {
+      "name": "Run Database",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/database"
+      ]
+    },
+    {
       "name": "Run All Extensions",
       "type": "extensionHost",
       "request": "launch",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}/boards",
         "--extensionDevelopmentPath=${workspaceFolder}/notes",
-        "--extensionDevelopmentPath=${workspaceFolder}/flow"
+        "--extensionDevelopmentPath=${workspaceFolder}/flow",
+        "--extensionDevelopmentPath=${workspaceFolder}/database"
       ]
     }
   ]

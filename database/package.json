@@ -1,0 +1,155 @@
+{
+  "name": "database",
+  "displayName": "Database",
+  "description": "View and edit databases from VS Code: SQLite, PostgreSQL, MySQL/MariaDB, SQL Server, CSV/TSV/JSON — connections and data stay in your workspace.",
+  "version": "0.1.0",
+  "publisher": "local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "database",
+    "sql",
+    "sqlite",
+    "postgres",
+    "mysql",
+    "csv",
+    "table"
+  ],
+  "main": "./src/extension.js",
+  "activationEvents": [
+    "onView:database.connectionsView",
+    "onCommand:database.addConnection",
+    "onCommand:database.editConnection",
+    "onCommand:database.openDataFile",
+    "onCommand:database.openQuery",
+    "onCommand:database.removeConnection",
+    "onCommand:database.refresh"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "database.addConnection",
+        "title": "Add Connection",
+        "category": "Database",
+        "icon": "$(add)"
+      },
+      {
+        "command": "database.openDataFile",
+        "title": "Open Data File (CSV, TSV, JSON, SQLite)",
+        "category": "Database",
+        "icon": "$(file-code)"
+      },
+      {
+        "command": "database.refresh",
+        "title": "Refresh",
+        "category": "Database",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "database.openQuery",
+        "title": "Open Query Console",
+        "category": "Database",
+        "icon": "$(terminal)"
+      },
+      {
+        "command": "database.editConnection",
+        "title": "Edit Connection",
+        "category": "Database",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "database.removeConnection",
+        "title": "Remove Connection",
+        "category": "Database",
+        "icon": "$(trash)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "database",
+          "title": "Database",
+          "icon": "media/database.svg"
+        }
+      ]
+    },
+    "views": {
+      "database": [
+        {
+          "id": "database.connectionsView",
+          "name": "Connections"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "database.addConnection",
+          "when": "view == database.connectionsView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "database.openDataFile",
+          "when": "view == database.connectionsView",
+          "group": "navigation@2"
+        },
+        {
+          "command": "database.refresh",
+          "when": "view == database.connectionsView",
+          "group": "navigation@3"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "database.openQuery",
+          "when": "view == database.connectionsView && viewItem == connection",
+          "group": "1_open@1"
+        },
+        {
+          "command": "database.editConnection",
+          "when": "view == database.connectionsView && viewItem == connection",
+          "group": "1_open@2"
+        },
+        {
+          "command": "database.refresh",
+          "when": "view == database.connectionsView && viewItem == connection",
+          "group": "inline@1"
+        },
+        {
+          "command": "database.removeConnection",
+          "when": "view == database.connectionsView && viewItem == connection",
+          "group": "inline@2"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Database",
+      "properties": {
+        "database.pageSize": {
+          "type": "number",
+          "default": 500,
+          "description": "How many rows to load per page in the data grid."
+        },
+        "database.connectionsFile": {
+          "type": "string",
+          "default": "database/connections.json",
+          "description": "Workspace-relative file where connection settings (without passwords) are stored."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "check": "node --check src/extension.js && node --check src/store.js && node --check src/tree.js && node --check src/drivers/index.js && node --check src/drivers/sqlite.js && node --check src/drivers/postgres.js && node --check src/drivers/mysql.js && node --check src/drivers/mssql.js && node --check src/drivers/file.js && node --check src/panels/dataPanel.js && node --check src/panels/connectionForm.js && node --check media/data.js && node --check media/form.js"
+  },
+  "dependencies": {
+    "mssql": "^11.0.1",
+    "mysql2": "^3.11.5",
+    "pg": "^8.13.1",
+    "sql.js": "^1.12.0"
+  }
+}

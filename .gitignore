@@ -2,5 +2,7 @@
 boards/*.vsix
 notes/*.vsix
 flow/*.vsix
+database/*.vsix
+database/node_modules/
 boards/trello/
 boards/notes/

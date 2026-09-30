@@ -1,0 +1,4 @@
+.vscode/**
+*.vsix
+test/**
+.DS_Store
