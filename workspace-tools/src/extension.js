@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const { ConnectionStore, uid, secretKey, resolvePath } = require('./store');
 const { createSession } = require('./drivers');
 const { getHtml } = require('./webview');
+const { BookmarksManager, CATEGORIES } = require('./bookmarks');
 
 const VIEW_ID = 'workspaceTools.view';
 const NETWORK_TYPES = ['postgres', 'mysql', 'mssql'];
@@ -20,6 +21,7 @@ let flowData = null;
 
 let store = null;
 let sessions = null;
+let bookmarksManager = null;
 let dbView = { connectionId: null, table: null, offset: 0 };
 const tempConnections = new Map();
 
@@ -464,6 +466,17 @@ function broadcast(message, skip) {
   }
 }
 
+function broadcastBookmarks(skip) {
+  broadcast(
+    {
+      type: 'bookmarks-state',
+      bookmarks: bookmarksManager ? bookmarksManager.list() : [],
+      categories: CATEGORIES,
+    },
+    skip
+  );
+}
+
 async function sendBoardsState(webview) {
   const data = await loadBoards();
   webview.postMessage({ type: 'boards-state', data });
@@ -734,6 +747,28 @@ async function handleMessage(message, webview, context) {
         await sendDbState(webview);
         break;
       }
+      // ---- bookmarks
+      case 'bookmarks-ready':
+        await bookmarksManager.ensure();
+        webview.postMessage({
+          type: 'bookmarks-state',
+          bookmarks: bookmarksManager.list(),
+          categories: CATEGORIES,
+        });
+        break;
+      case 'bookmarks-open':
+        await bookmarksManager.navigate(String(message.id || ''));
+        break;
+      case 'bookmarks-delete':
+        await bookmarksManager.remove(String(message.id || ''));
+        break;
+      case 'bookmarks-update':
+        await bookmarksManager.update(String(message.id || ''), {
+          comment: typeof message.comment === 'string' ? message.comment : undefined,
+          category: typeof message.category === 'string' ? message.category : undefined,
+        });
+        break;
+
       default:
         break;
     }
@@ -743,6 +778,8 @@ async function handleMessage(message, webview, context) {
     let type = 'db-error';
     if (String(message.type || '').startsWith('notes-')) {
       type = 'notes-error';
+    } else if (String(message.type || '').startsWith('bookmarks-')) {
+      type = 'bookmarks-error';
     } else if (formTypes.includes(message.type)) {
       type = 'db-formError';
     }
@@ -793,6 +830,12 @@ function activate(context) {
   extensionUri = context.extensionUri;
   store = new ConnectionStore();
   sessions = new SessionManager(context);
+  bookmarksManager = new BookmarksManager({
+    workspaceFolder,
+    extensionUri: context.extensionUri,
+    onChange: () => broadcastBookmarks(),
+  });
+  bookmarksManager.init(context);
 
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(VIEW_ID, {
@@ -811,6 +854,50 @@ function activate(context) {
 
   context.subscriptions.push({
     dispose: () => sessions && sessions.closeAll(),
+  });
+
+  registerCommand(context, 'bookmarks.add', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showInformationMessage('Open a file to bookmark a line.');
+      return;
+    }
+    const picked = await vscode.window.showQuickPick(
+      [{ label: 'No category', id: '' }].concat(
+        CATEGORIES.map(category => ({ label: category.label, id: category.id }))
+      ),
+      { placeHolder: 'Bookmark category' }
+    );
+    if (!picked) {
+      return;
+    }
+    const comment = await vscode.window.showInputBox({
+      prompt: 'Bookmark comment (optional)',
+      placeHolder: 'e.g. needs a null check',
+    });
+    if (comment === undefined) {
+      return;
+    }
+    await bookmarksManager.add(editor, picked.id, comment.trim());
+  });
+
+  registerCommand(context, 'bookmarks.remove', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+    await bookmarksManager.removeAtCursor(editor);
+  });
+
+  registerCommand(context, 'bookmarks.clear', async () => {
+    const answer = await vscode.window.showWarningMessage(
+      'Remove all bookmarks?',
+      { modal: true },
+      'Clear All'
+    );
+    if (answer === 'Clear All') {
+      await bookmarksManager.clear();
+    }
   });
 
   registerCommand(context, 'workspaceTools.open', async () => {

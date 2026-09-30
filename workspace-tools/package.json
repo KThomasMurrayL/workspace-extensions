@@ -2,7 +2,7 @@
   "name": "workspace-tools",
   "displayName": "Workspace Tools",
   "description": "Boards, Notes, Flow and Database in one extension with tabs. Everything is stored in your workspace. Local test build.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "local",
   "license": "MIT",
   "engines": {
@@ -22,7 +22,10 @@
   "activationEvents": [
     "onView:workspaceTools.view",
     "onCommand:workspaceTools.open",
-    "onCommand:workspaceTools.refresh"
+    "onCommand:workspaceTools.refresh",
+    "onCommand:bookmarks.add",
+    "onCommand:bookmarks.remove",
+    "onCommand:bookmarks.clear"
   ],
   "contributes": {
     "commands": [
@@ -37,6 +40,37 @@
         "title": "Refresh",
         "category": "Workspace Tools",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "bookmarks.add",
+        "title": "Add Bookmark",
+        "category": "Bookmarks",
+        "icon": "$(bookmark)"
+      },
+      {
+        "command": "bookmarks.remove",
+        "title": "Remove Bookmark at Cursor",
+        "category": "Bookmarks",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "bookmarks.clear",
+        "title": "Clear All Bookmarks",
+        "category": "Bookmarks"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "bookmarks.add",
+        "key": "ctrl+alt+b",
+        "mac": "alt+cmd+b",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "bookmarks.remove",
+        "key": "ctrl+alt+shift+b",
+        "mac": "shift+alt+cmd+b",
+        "when": "editorTextFocus"
       }
     ],
     "viewsContainers": {
@@ -69,6 +103,18 @@
           "when": "view == workspaceTools.view",
           "group": "navigation@2"
         }
+      ],
+      "editor/context": [
+        {
+          "command": "bookmarks.add",
+          "when": "editorTextFocus",
+          "group": "9_bookmarks@1"
+        },
+        {
+          "command": "bookmarks.remove",
+          "when": "editorTextFocus",
+          "group": "9_bookmarks@2"
+        }
       ]
     },
     "configuration": {
@@ -98,7 +144,7 @@
     }
   },
   "scripts": {
-    "check": "node --check src/extension.js && node --check src/webview.js && node --check src/store.js && node --check media/app.js && node --check media/notes.js && node --check media/db-connections.js && node --check media/boards.js && node --check media/flow.js && node --check media/database.js"
+    "check": "node --check src/extension.js && node --check src/webview.js && node --check src/store.js && node --check src/bookmarks.js && node --check media/app.js && node --check media/notes.js && node --check media/db-connections.js && node --check media/boards.js && node --check media/flow.js && node --check media/database.js && node --check media/bookmarks.js"
   },
   "dependencies": {
     "mssql": "^11.0.1",

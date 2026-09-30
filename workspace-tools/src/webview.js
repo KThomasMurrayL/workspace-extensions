@@ -27,6 +27,7 @@ function getHtml(webview, extensionUri) {
     <button class="app-tab" data-tab="notes">Notes</button>
     <button class="app-tab" data-tab="flow">Flow</button>
     <button class="app-tab" data-tab="database">Database</button>
+    <button class="app-tab" data-tab="bookmarks">Bookmarks</button>
   </nav>
 
   <div id="views">
@@ -291,6 +292,49 @@ function getHtml(webview, extensionUri) {
       </div>
     </section>
 
+    <section id="tab-bookmarks" class="tool-view hidden">
+      <div class="bm-toolbar">
+        <input id="bm-search" type="text" placeholder="Search bookmarks">
+        <select id="bm-category" title="Filter by category"></select>
+        <select id="bm-sort" title="Sort bookmarks">
+          <option value="file">File order</option>
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+        </select>
+      </div>
+      <div id="bm-error" class="error hidden"></div>
+      <div id="bm-list" class="bm-list"></div>
+      <div id="bm-empty" class="bm-empty hidden">
+        No bookmarks yet \u2014 select code in the editor, right-click and choose <b>Add Bookmark</b>, or press <b>\u2325\u2318B</b>.
+      </div>
+      <div id="bm-edit-overlay" class="overlay hidden">
+        <div class="dialog small" role="dialog" aria-modal="true">
+          <h3>Edit bookmark</h3>
+          <label class="field">
+            <span>Comment</span>
+            <input id="bm-edit-comment" type="text" placeholder="Comment">
+          </label>
+          <label class="field">
+            <span>Category</span>
+            <select id="bm-edit-category"></select>
+          </label>
+          <div class="dialog-actions right">
+            <button id="bm-edit-cancel">Cancel</button>
+            <button id="bm-edit-save" class="primary">Save</button>
+          </div>
+        </div>
+      </div>
+      <div id="bm-confirm-overlay" class="overlay hidden">
+        <div class="dialog small" role="dialog" aria-modal="true">
+          <p id="bm-confirm-text"></p>
+          <div class="dialog-actions right">
+            <button id="bm-confirm-cancel">Cancel</button>
+            <button id="bm-confirm-ok" class="primary">Delete</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </div>
 
   <script nonce="${nonce}" src="${assets('app.js')}"></script>
@@ -299,6 +343,7 @@ function getHtml(webview, extensionUri) {
   <script nonce="${nonce}" src="${assets('flow.js')}"></script>
   <script nonce="${nonce}" src="${assets('database.js')}"></script>
   <script nonce="${nonce}" src="${assets('db-connections.js')}"></script>
+  <script nonce="${nonce}" src="${assets('bookmarks.js')}"></script>
 </body>
 </html>`;
 }

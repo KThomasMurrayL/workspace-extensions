@@ -988,6 +988,7 @@ input[type='number'], input[type='password'] {
 .app-tabs {
   flex: 0 0 auto;
   display: flex;
+  flex-wrap: wrap;
   gap: 2px;
   padding: 6px 8px;
   border-bottom: 1px solid var(--vscode-panel-border, rgba(128, 128, 128, 0.25));
@@ -1366,4 +1367,135 @@ body {
   font-size: var(--vscode-font-size, 13px);
   color: var(--vscode-foreground);
   background: var(--vscode-editor-background);
+}
+
+/* Bookmarks tab */
+
+.bm-toolbar {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--vscode-panel-border, rgba(128, 128, 128, 0.25));
+}
+
+.bm-toolbar input[type='text'] {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.bm-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bm-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--vscode-panel-border, rgba(128, 128, 128, 0.25));
+  border-radius: 8px;
+  background: var(--vscode-editorWidget-background, var(--vscode-editor-background));
+  cursor: pointer;
+}
+
+.bm-row:hover {
+  border-color: var(--vscode-focusBorder);
+}
+
+.bm-chip {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  font-size: 11px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.bm-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.bm-loc {
+  font-size: 12px;
+  color: var(--vscode-descriptionForeground, var(--vscode-foreground));
+  font-family: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, monospace;
+}
+
+.bm-comment {
+  font-size: 13px;
+  margin-top: 2px;
+  word-break: break-word;
+}
+
+.bm-snippet {
+  margin-top: 3px;
+  font-family: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  opacity: 0.65;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bm-actions {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.bm-row:hover .bm-actions {
+  opacity: 1;
+}
+
+.bm-btn {
+  padding: 0 7px;
+  min-width: 24px;
+  line-height: 22px;
+  background: transparent;
+  border: none;
+  color: var(--vscode-foreground);
+  opacity: 0.85;
+}
+
+.bm-btn:hover {
+  background: var(--vscode-toolbar-hoverBackground, rgba(128, 128, 128, 0.2));
+  opacity: 1;
+}
+
+.bm-empty {
+  padding: 32px 16px;
+  text-align: center;
+  opacity: 0.65;
+  margin: auto;
+}
+
+#tab-bookmarks .error {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  background: var(--vscode-inputValidation-errorBackground, rgba(255, 0, 0, 0.12));
+  border-bottom: 1px solid var(--vscode-inputValidation-errorBorder, #be1100);
+  color: var(--vscode-errorForeground);
+}
+
+#tab-bookmarks .field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#tab-bookmarks .field > span {
+  font-size: 12px;
+  opacity: 0.8;
 }

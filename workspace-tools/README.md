@@ -6,6 +6,22 @@ All four extensions in one, with a tab bar:
 - **Notes** — markdown notes with image insert and preview (`notes/`)
 - **Flow** — flow charts with labelled arrows and markdown-outline export (`flow/flow.json`)
 - **Database** — SQLite, PostgreSQL, MySQL/MariaDB, SQL Server, CSV/TSV/JSON (`database/connections.json`)
+- **Bookmarks** — bookmark a line or selection in the editor with a category and a comment;
+  comments show inline, and the Bookmarks tab lists/filters them (`bookmarks/bookmarks.json`)
+
+## Bookmarks
+
+- Select code (or just put the cursor on a line) and either:
+  - right-click → **Add Bookmark**, or
+  - press **⌥⌘B** (`ctrl+alt+b` on Windows/Linux).
+- Pick a **category** (Note, Bug, Todo, Question, Important or none), then type an optional **comment**.
+- The line gets a gutter star, the comment shows **inline** after the code, and the comment
+  appears on hover.
+- `⌥⇧⌘B` removes the bookmark at the cursor.
+- The **Bookmarks** tab lists everything — search, filter by category, sort by file/newest/oldest,
+  edit comments, jump to the line (click the row) or delete.
+- Bookmarks track the code: if lines move, the snippet is found again automatically.
+- Everything saves to `bookmarks/bookmarks.json` in the workspace.
 
 This build is **local only** — it is not packaged for the public repo. It reuses the same
 storage folders as the individual extensions, so your existing data shows up as-is.
