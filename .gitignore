@@ -6,3 +6,5 @@ database/*.vsix
 database/node_modules/
 boards/trello/
 boards/notes/
+workspace-tools/node_modules/
+workspace-tools/*.vsix

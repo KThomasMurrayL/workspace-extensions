@@ -1,0 +1,109 @@
+{
+  "name": "workspace-tools",
+  "displayName": "Workspace Tools",
+  "description": "Boards, Notes, Flow and Database in one extension with tabs. Everything is stored in your workspace. Local test build.",
+  "version": "0.1.0",
+  "publisher": "local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "boards",
+    "notes",
+    "flow",
+    "database",
+    "all-in-one"
+  ],
+  "main": "./src/extension.js",
+  "activationEvents": [
+    "onView:workspaceTools.view",
+    "onCommand:workspaceTools.open",
+    "onCommand:workspaceTools.refresh"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "workspaceTools.open",
+        "title": "Open Workspace Tools",
+        "category": "Workspace Tools",
+        "icon": "$(window)"
+      },
+      {
+        "command": "workspaceTools.refresh",
+        "title": "Refresh",
+        "category": "Workspace Tools",
+        "icon": "$(refresh)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "workspaceTools",
+          "title": "Workspace Tools",
+          "icon": "media/workspace-tools.svg"
+        }
+      ]
+    },
+    "views": {
+      "workspaceTools": [
+        {
+          "id": "workspaceTools.view",
+          "name": "Workspace Tools",
+          "type": "webview"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "workspaceTools.open",
+          "when": "view == workspaceTools.view",
+          "group": "navigation@1"
+        },
+        {
+          "command": "workspaceTools.refresh",
+          "when": "view == workspaceTools.view",
+          "group": "navigation@2"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Workspace Tools",
+      "properties": {
+        "workspaceTools.notesFolder": {
+          "type": "string",
+          "default": "notes",
+          "description": "Workspace-relative folder where notes are stored."
+        },
+        "workspaceTools.assetsFolder": {
+          "type": "string",
+          "default": "notes/assets",
+          "description": "Workspace-relative folder where inserted images are copied."
+        },
+        "workspaceTools.pageSize": {
+          "type": "number",
+          "default": 500,
+          "description": "How many rows to load per page in the database grid."
+        },
+        "workspaceTools.connectionsFile": {
+          "type": "string",
+          "default": "database/connections.json",
+          "description": "Workspace-relative file where connection settings (without passwords) are stored."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "check": "node --check src/extension.js && node --check src/webview.js && node --check src/store.js && node --check media/app.js && node --check media/notes.js && node --check media/db-connections.js && node --check media/boards.js && node --check media/flow.js && node --check media/database.js"
+  },
+  "dependencies": {
+    "mssql": "^11.0.1",
+    "mysql2": "^3.11.5",
+    "pg": "^8.13.1",
+    "sql.js": "^1.12.0"
+  }
+}
