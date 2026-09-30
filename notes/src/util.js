@@ -5,7 +5,7 @@ const NOTE_EXTENSIONS = ['.md', '.markdown'];
 const IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.bmp', '.ico'];
 
 function config() {
-  return vscode.workspace.getConfiguration('obsidianNotes');
+  return vscode.workspace.getConfiguration('notes');
 }
 
 function workspaceFolder() {
@@ -17,7 +17,7 @@ function workspaceFolder() {
 }
 
 function notesFolderName() {
-  return config().get('notesFolder') || 'notes';
+  return config().get('folder') || 'notes';
 }
 
 function assetsFolderName() {

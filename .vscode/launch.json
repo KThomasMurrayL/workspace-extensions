@@ -10,11 +10,11 @@
       ]
     },
     {
-      "name": "Run Obsidian Notes",
+      "name": "Run Notes",
       "type": "extensionHost",
       "request": "launch",
       "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}/obsidian-notes"
+        "--extensionDevelopmentPath=${workspaceFolder}/notes"
       ]
     },
     {
@@ -23,7 +23,7 @@
       "request": "launch",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}/boards",
-        "--extensionDevelopmentPath=${workspaceFolder}/obsidian-notes"
+        "--extensionDevelopmentPath=${workspaceFolder}/notes"
       ]
     }
   ]

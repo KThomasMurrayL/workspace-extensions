@@ -1,5 +1,5 @@
 .DS_Store
 boards/*.vsix
-obsidian-notes/*.vsix
+notes/*.vsix
 boards/trello/
 boards/notes/

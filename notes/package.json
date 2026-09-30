@@ -1,8 +1,8 @@
 {
-  "name": "obsidian-notes",
-  "displayName": "Obsidian Notes",
-  "description": "Obsidian-style markdown note taking in VS Code: notes tree, daily notes, [[wiki links]] and image uploads stored in your workspace.",
-  "version": "0.1.0",
+  "name": "notes",
+  "displayName": "Notes",
+  "description": "Markdown note taking in VS Code: notes tree, daily notes, [[wiki links]] and image uploads stored in your workspace.",
+  "version": "0.2.0",
   "publisher": "local",
   "license": "MIT",
   "engines": {
@@ -13,83 +13,84 @@
   ],
   "keywords": [
     "notes",
-    "obsidian",
     "markdown",
-    "wiki"
+    "wiki",
+    "vault",
+    "note-taking"
   ],
   "main": "./src/extension.js",
   "activationEvents": [
-    "onView:obsidianNotes.notesView",
+    "onView:notes.notesView",
     "onLanguage:markdown",
-    "onCommand:obsidianNotes.newNote",
-    "onCommand:obsidianNotes.newFolder",
-    "onCommand:obsidianNotes.openDailyNote",
-    "onCommand:obsidianNotes.insertImage",
-    "onCommand:obsidianNotes.openPreview",
-    "onCommand:obsidianNotes.renameNote",
-    "onCommand:obsidianNotes.deleteNote",
-    "onCommand:obsidianNotes.revealNote",
-    "onCommand:obsidianNotes.openNotesFolder",
-    "onCommand:obsidianNotes.refresh"
+    "onCommand:notes.newNote",
+    "onCommand:notes.newFolder",
+    "onCommand:notes.openDailyNote",
+    "onCommand:notes.insertImage",
+    "onCommand:notes.openPreview",
+    "onCommand:notes.renameNote",
+    "onCommand:notes.deleteNote",
+    "onCommand:notes.revealNote",
+    "onCommand:notes.openNotesFolder",
+    "onCommand:notes.refresh"
   ],
   "contributes": {
     "commands": [
       {
-        "command": "obsidianNotes.newNote",
+        "command": "notes.newNote",
         "title": "New Note",
         "category": "Notes",
         "icon": "$(new-file)"
       },
       {
-        "command": "obsidianNotes.newFolder",
+        "command": "notes.newFolder",
         "title": "New Folder",
         "category": "Notes",
         "icon": "$(new-folder)"
       },
       {
-        "command": "obsidianNotes.openDailyNote",
+        "command": "notes.openDailyNote",
         "title": "Open Today's Note",
         "category": "Notes",
         "icon": "$(calendar)"
       },
       {
-        "command": "obsidianNotes.insertImage",
+        "command": "notes.insertImage",
         "title": "Insert Image",
         "category": "Notes",
         "icon": "$(file-media)"
       },
       {
-        "command": "obsidianNotes.openPreview",
+        "command": "notes.openPreview",
         "title": "Open Preview",
         "category": "Notes",
         "icon": "$(open-preview)"
       },
       {
-        "command": "obsidianNotes.renameNote",
+        "command": "notes.renameNote",
         "title": "Rename",
         "category": "Notes",
         "icon": "$(edit)"
       },
       {
-        "command": "obsidianNotes.deleteNote",
+        "command": "notes.deleteNote",
         "title": "Delete",
         "category": "Notes",
         "icon": "$(trash)"
       },
       {
-        "command": "obsidianNotes.revealNote",
+        "command": "notes.revealNote",
         "title": "Reveal in File Explorer",
         "category": "Notes",
         "icon": "$(go-to-file)"
       },
       {
-        "command": "obsidianNotes.openNotesFolder",
+        "command": "notes.openNotesFolder",
         "title": "Open Notes Folder",
         "category": "Notes",
         "icon": "$(folder-opened)"
       },
       {
-        "command": "obsidianNotes.refresh",
+        "command": "notes.refresh",
         "title": "Refresh",
         "category": "Notes",
         "icon": "$(refresh)"
@@ -98,16 +99,16 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "obsidianNotes",
+          "id": "notes",
           "title": "Notes",
           "icon": "media/notes.svg"
         }
       ]
     },
     "views": {
-      "obsidianNotes": [
+      "notes": [
         {
-          "id": "obsidianNotes.notesView",
+          "id": "notes.notesView",
           "name": "Notes"
         }
       ]
@@ -115,61 +116,61 @@
     "menus": {
       "view/title": [
         {
-          "command": "obsidianNotes.newNote",
-          "when": "view == obsidianNotes.notesView",
+          "command": "notes.newNote",
+          "when": "view == notes.notesView",
           "group": "navigation@1"
         },
         {
-          "command": "obsidianNotes.newFolder",
-          "when": "view == obsidianNotes.notesView",
+          "command": "notes.newFolder",
+          "when": "view == notes.notesView",
           "group": "navigation@2"
         },
         {
-          "command": "obsidianNotes.openDailyNote",
-          "when": "view == obsidianNotes.notesView",
+          "command": "notes.openDailyNote",
+          "when": "view == notes.notesView",
           "group": "navigation@3"
         },
         {
-          "command": "obsidianNotes.refresh",
-          "when": "view == obsidianNotes.notesView",
+          "command": "notes.refresh",
+          "when": "view == notes.notesView",
           "group": "navigation@4"
         },
         {
-          "command": "obsidianNotes.openNotesFolder",
-          "when": "view == obsidianNotes.notesView",
+          "command": "notes.openNotesFolder",
+          "when": "view == notes.notesView",
           "group": "1_actions"
         }
       ],
       "view/item/context": [
         {
-          "command": "obsidianNotes.newNote",
-          "when": "view == obsidianNotes.notesView && viewItem == folder",
+          "command": "notes.newNote",
+          "when": "view == notes.notesView && viewItem == folder",
           "group": "inline@1"
         },
         {
-          "command": "obsidianNotes.renameNote",
-          "when": "view == obsidianNotes.notesView && viewItem =~ /^(note|image|folder)$/",
+          "command": "notes.renameNote",
+          "when": "view == notes.notesView && viewItem =~ /^(note|image|folder)$/",
           "group": "inline@2"
         },
         {
-          "command": "obsidianNotes.deleteNote",
-          "when": "view == obsidianNotes.notesView && viewItem =~ /^(note|image|folder)$/",
+          "command": "notes.deleteNote",
+          "when": "view == notes.notesView && viewItem =~ /^(note|image|folder)$/",
           "group": "inline@3"
         },
         {
-          "command": "obsidianNotes.revealNote",
-          "when": "view == obsidianNotes.notesView && viewItem =~ /^(note|image|folder)$/",
+          "command": "notes.revealNote",
+          "when": "view == notes.notesView && viewItem =~ /^(note|image|folder)$/",
           "group": "2_actions"
         }
       ],
       "editor/title": [
         {
-          "command": "obsidianNotes.openPreview",
+          "command": "notes.openPreview",
           "when": "editorLangId == markdown",
           "group": "navigation"
         },
         {
-          "command": "obsidianNotes.insertImage",
+          "command": "notes.insertImage",
           "when": "editorLangId == markdown",
           "group": "navigation"
         }
@@ -178,26 +179,26 @@
     "configuration": {
       "title": "Notes",
       "properties": {
-        "obsidianNotes.notesFolder": {
+        "notes.folder": {
           "type": "string",
           "default": "notes",
           "description": "Workspace-relative folder where notes are stored."
         },
-        "obsidianNotes.assetsFolder": {
+        "notes.assetsFolder": {
           "type": "string",
           "default": "notes/assets",
           "description": "Workspace-relative folder where uploaded images are copied."
         },
-        "obsidianNotes.imageSyntax": {
+        "notes.imageSyntax": {
           "type": "string",
           "enum": [
             "markdown",
             "wiki"
           ],
           "default": "markdown",
-          "description": "markdown: ![](relative/path.png) \u2014 renders in the built-in preview. wiki: ![[relative/path.png]] \u2014 Obsidian style."
+          "description": "markdown: standard image link \u2014 renders in the built-in preview. wiki: ![[relative/path.png]] embed style."
         },
-        "obsidianNotes.linkCompletion": {
+        "notes.linkCompletion": {
           "type": "boolean",
           "default": true,
           "description": "Suggest notes and images when typing [[ or ![[ in markdown files."

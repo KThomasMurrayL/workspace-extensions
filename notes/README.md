@@ -1,7 +1,7 @@
-# Obsidian Notes
+# Notes
 
-Obsidian-style markdown note taking in VS Code. Notes and images live inside your
-workspace (`notes/` and `notes/assets/` by default), so they are versioned with your project.
+Markdown note taking in VS Code. Notes and images live inside your workspace (`notes/` and
+`notes/assets/` by default), so they are versioned with your project.
 
 ## Features
 
@@ -26,10 +26,10 @@ workspace (`notes/` and `notes/assets/` by default), so they are versioned with 
 
 | Setting | Default | Description |
 | --- | --- | --- |
-| `obsidianNotes.notesFolder` | `notes` | Where notes are stored. |
-| `obsidianNotes.assetsFolder` | `notes/assets` | Where uploaded images are copied. |
-| `obsidianNotes.imageSyntax` | `markdown` | Standard markdown image link, or `wiki` for an Obsidian-style `![[...]]` embed. |
-| `obsidianNotes.linkCompletion` | `true` | Suggest notes/images after `[[`. |
+| `notes.folder` | `notes` | Where notes are stored. |
+| `notes.assetsFolder` | `notes/assets` | Where uploaded images are copied. |
+| `notes.imageSyntax` | `markdown` | Standard markdown image link, or `wiki` for an `![[...]]` embed. |
+| `notes.linkCompletion` | `true` | Suggest notes/images after `[[`. |
 
 ## Run this extension (development)
 
@@ -37,15 +37,15 @@ workspace (`notes/` and `notes/assets/` by default), so they are versioned with 
 > debugger fails to attach. Use **Run menu → Run Without Debugging**, or run
 > `../run-notes.sh` from a terminal instead.
 
-1. Open this folder (`obsidian-notes`) in VS Code.
+1. Open this folder (`notes`) in VS Code.
 2. Run **Run → Run Without Debugging** (or `./run-notes.sh` from the parent folder).
 3. In the new Extension Development Host window, open any folder — the Notes view appears in the activity bar.
 
 ## Install permanently
 
-Download `obsidian-notes-0.1.0.vsix` from <https://kthomasmurrayl.github.io/boards-and-notes/>, or:
+Download `notes-0.2.0.vsix` from <https://kthomasmurrayl.github.io/boards-and-notes/>, or:
 
 ```bash
 npx --yes @vscode/vsce package --allow-missing-repository
-"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" --install-extension obsidian-notes-0.1.0.vsix
+"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" --install-extension notes-0.2.0.vsix
 ```

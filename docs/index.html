@@ -428,7 +428,7 @@
             <path d="M5 2.5h9.2L20 8.3V21a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1zm8.4 1.8V9h4.7l-4.7-4.7zM7.5 12h9v1.6h-9V12zm0 3.4h6.5v1.6H7.5v-1.6z"/>
           </svg>
         </div>
-        <h2>Obsidian Notes</h2>
+        <h2>Notes</h2>
         <p class="tagline">A lightweight markdown note vault in your sidebar.</p>
         <ul class="features">
           <li>Notes tree, folders and daily notes</li>
@@ -437,12 +437,12 @@
           <li>Saved to <code>notes/</code> in your workspace</li>
         </ul>
         <div class="btn-row">
-          <a class="btn btn-primary" href="downloads/obsidian-notes-0.1.0.vsix" download>
+          <a class="btn btn-primary" href="downloads/notes-0.2.0.vsix" download>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3v10.6l3.8-3.8 1.4 1.4L12 16.4l-5.2-5.2 1.4-1.4 3.8 3.8V3h2zM5 19h14v2H5v-2z"/></svg>
             Download Notes
           </a>
         </div>
-        <div class="file-meta">obsidian-notes-0.1.0.vsix · 10 KB</div>
+        <div class="file-meta">notes-0.2.0.vsix · 10 KB</div>
       </article>
 
     </div>
@@ -465,7 +465,7 @@
         <div class="terminal">
           <button class="copy-btn" data-copy="code --install-extension ~/Downloads/boards-0.2.0.vsix" title="Copy">⧉</button>
           <pre>code --install-extension ~/Downloads/boards-0.2.0.vsix
-code --install-extension ~/Downloads/obsidian-notes-0.1.0.vsix</pre>
+code --install-extension ~/Downloads/notes-0.2.0.vsix</pre>
         </div>
       </li>
       <li>
@@ -494,7 +494,8 @@ code --install-extension ~/Downloads/obsidian-notes-0.1.0.vsix</pre>
 <script>
   document.querySelectorAll('.copy-btn').forEach(function (button) {
     button.addEventListener('click', function () {
-      var text = button.getAttribute('data-copy');
+      var pre = button.parentElement.querySelector('pre');
+      var text = pre ? pre.textContent : button.getAttribute('data-copy');
       if (navigator.clipboard) {
         navigator.clipboard.writeText(text).then(function () {
           button.textContent = '✓';

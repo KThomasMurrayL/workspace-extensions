@@ -16,12 +16,12 @@ let tree;
 
 function activate(context) {
   tree = new NotesTreeProvider();
-  context.subscriptions.push(vscode.window.registerTreeDataProvider('obsidianNotes.notesView', tree));
+  context.subscriptions.push(vscode.window.registerTreeDataProvider('notes.notesView', tree));
 
   const folder = vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders[0];
   if (folder) {
     const watcher = vscode.workspace.createFileSystemWatcher(
-      new vscode.RelativePattern(folder, `${config().get('notesFolder') || 'notes'}/**`)
+      new vscode.RelativePattern(folder, `${config().get('folder') || 'notes'}/**`)
     );
     watcher.onDidCreate(() => tree.refresh());
     watcher.onDidChange(() => tree.refresh());
@@ -29,16 +29,16 @@ function activate(context) {
     context.subscriptions.push(watcher);
   }
 
-  register(context, 'obsidianNotes.newNote', newNote);
-  register(context, 'obsidianNotes.newFolder', newFolder);
-  register(context, 'obsidianNotes.openDailyNote', openDailyNote);
-  register(context, 'obsidianNotes.insertImage', insertImage);
-  register(context, 'obsidianNotes.openPreview', openPreview);
-  register(context, 'obsidianNotes.renameNote', renameNote);
-  register(context, 'obsidianNotes.deleteNote', deleteNote);
-  register(context, 'obsidianNotes.revealNote', revealNote);
-  register(context, 'obsidianNotes.openNotesFolder', openNotesFolder);
-  register(context, 'obsidianNotes.refresh', async () => tree.refresh());
+  register(context, 'notes.newNote', newNote);
+  register(context, 'notes.newFolder', newFolder);
+  register(context, 'notes.openDailyNote', openDailyNote);
+  register(context, 'notes.insertImage', insertImage);
+  register(context, 'notes.openPreview', openPreview);
+  register(context, 'notes.renameNote', renameNote);
+  register(context, 'notes.deleteNote', deleteNote);
+  register(context, 'notes.revealNote', revealNote);
+  register(context, 'notes.openNotesFolder', openNotesFolder);
+  register(context, 'notes.refresh', async () => tree.refresh());
 
   links.register(context);
 }

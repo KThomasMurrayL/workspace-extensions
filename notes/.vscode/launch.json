@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run Obsidian Notes Extension",
+      "name": "Run Notes Extension",
       "type": "extensionHost",
       "request": "launch",
       "args": [
