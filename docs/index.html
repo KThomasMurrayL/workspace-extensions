@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="A small collection of VS Code extensions for boards, notes and flow charts — everything saved as plain files in your workspace.">
+<meta name="description" content="A growing collection of VS Code extensions: kanban boards, notes, flow charts, database tools and code bookmarks — saved as plain files in your workspace.">
 <title>Workspace Extensions — VS Code extensions</title>
 <style>
   :root {
@@ -131,6 +131,47 @@
   .card:nth-child(2) { animation-delay: 0.15s; }
   .card:nth-child(3) { animation-delay: 0.25s; }
   .card:nth-child(4) { animation-delay: 0.35s; }
+
+  .card.featured {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, rgba(29, 78, 216, 0.06), rgba(147, 51, 234, 0.06));
+  }
+
+  .card.featured .features {
+    columns: 2;
+    column-gap: var(--space-xl);
+  }
+
+  @media (max-width: 760px) {
+    .card.featured .features { columns: 1; }
+  }
+
+  .featured-head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-bottom: var(--space-sm);
+  }
+
+  .featured-head .card-icon {
+    margin-bottom: 0;
+  }
+
+  .featured-head h2 {
+    margin: 0;
+  }
+
+  .pill {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #ffffff;
+    background: linear-gradient(135deg, #7d3cf8, #bf5af2);
+    border-radius: 999px;
+    padding: 3px 10px;
+  }
 
   .card-icon {
     width: 56px;
@@ -378,7 +419,7 @@
   <div class="container narrow">
     <div class="eyebrow">VS Code Extensions</div>
     <h1>Workspace Extensions</h1>
-    <p>A growing collection of small extensions for planning, tracking, writing and working with data — everything saved as plain files in your own workspace.</p>
+    <p>A growing collection of small extensions for planning, tracking, writing, data and code bookmarks — everything saved as plain files in your own workspace.</p>
     <div class="meta">
       <span>Plain JavaScript</span>·<span>No dependencies</span>·<span>Data stays in your repo</span>
     </div>
@@ -388,6 +429,37 @@
 <section>
   <div class="container">
     <div class="cards">
+
+      <article class="card featured">
+        <div class="featured-head">
+          <div class="card-icon" style="background: linear-gradient(135deg, #1d4ed8, #9333ea);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <rect x="3" y="3" width="8" height="8" rx="1.5"/>
+              <rect x="13" y="3" width="8" height="8" rx="1.5"/>
+              <rect x="3" y="13" width="8" height="8" rx="1.5"/>
+              <rect x="13" y="13" width="8" height="8" rx="1.5"/>
+            </svg>
+          </div>
+          <h2>Workspace Tools</h2>
+          <span class="pill">New · 0.2.0</span>
+        </div>
+        <p class="tagline">All of it in one extension — Boards, Notes, Flow, Database and <strong>Bookmarks</strong> behind a single tab bar.</p>
+        <ul class="features">
+          <li><strong>Bookmarks</strong> — select code and press ⌥⌘B (or right-click → Add Bookmark), pick a category (Bug, Todo, Question…) and add a comment</li>
+          <li>Comments show <strong>inline in the editor</strong>, with a gold gutter star and hover details</li>
+          <li>Bookmarks tab: search, filter by category, sort, jump to the line, edit or delete</li>
+          <li>Line drift tracking — bookmarks follow the code when lines move</li>
+          <li>Everything from the four extensions below, stored in the same workspace folders</li>
+          <li>One install, one activity-bar icon, everything behind tabs</li>
+        </ul>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="downloads/workspace-tools-0.2.0.vsix" download>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3v10.6l3.8-3.8 1.4 1.4L12 16.4l-5.2-5.2 1.4-1.4 3.8 3.8V3h2zM5 19h14v2H5v-2z"/></svg>
+            Download Workspace Tools
+          </a>
+        </div>
+        <div class="file-meta">workspace-tools-0.2.0.vsix · 23 MB (bundled database drivers)</div>
+      </article>
 
       <article class="card">
         <div class="card-icon boards" aria-hidden="true">
@@ -507,7 +579,8 @@
         <p>Open the Extensions view, click the <code>…</code> menu, and choose <em>Install from VSIX…</em> — or use the terminal:</p>
         <div class="terminal">
           <button class="copy-btn" title="Copy">⧉</button>
-          <pre>code --install-extension ~/Downloads/boards-0.2.0.vsix
+          <pre>code --install-extension ~/Downloads/workspace-tools-0.2.0.vsix
+code --install-extension ~/Downloads/boards-0.2.0.vsix
 code --install-extension ~/Downloads/notes-0.2.0.vsix
 code --install-extension ~/Downloads/flow-0.1.1.vsix
 code --install-extension ~/Downloads/database-0.1.0.vsix</pre>
@@ -515,7 +588,7 @@ code --install-extension ~/Downloads/database-0.1.0.vsix</pre>
       </li>
       <li>
         <strong>Reload and open a folder</strong>
-        <p>Run <em>Developer: Reload Window</em> from the Command Palette (⇧⌘P). The Boards, Notes, Flow and Database icons appear in the activity bar of any folder you open.</p>
+        <p>Run <em>Developer: Reload Window</em> from the Command Palette (⇧⌘P). Install <strong>Workspace Tools</strong> for everything (including Bookmarks) behind one icon, or use the individual extensions from the cards below.</p>
       </li>
     </ol>
 
@@ -531,7 +604,7 @@ code --install-extension ~/Downloads/database-0.1.0.vsix</pre>
     <p>
       <a href="https://github.com/KThomasMurrayL/workspace-extensions">Source on GitHub</a>
       &nbsp;·&nbsp; MIT licensed
-      &nbsp;·&nbsp; Your boards, notes, flows and connections live in your own repository
+      &nbsp;·&nbsp; Your boards, notes, flows, connections and bookmarks live in your own repository
     </p>
   </div>
 </footer>
