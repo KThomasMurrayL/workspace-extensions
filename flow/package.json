@@ -1,0 +1,96 @@
+{
+  "name": "flow",
+  "displayName": "Flow",
+  "description": "Flow charts and project planning inside VS Code: nodes, arrows, multiple flows, saved to your workspace.",
+  "version": "0.1.0",
+  "publisher": "local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "flowchart",
+    "diagram",
+    "flow",
+    "planning",
+    "project"
+  ],
+  "main": "./src/extension.js",
+  "activationEvents": [
+    "onView:flow.flowView",
+    "onCommand:flow.openFlow",
+    "onCommand:flow.newFlow",
+    "onCommand:flow.newNode",
+    "onCommand:flow.refresh"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "flow.openFlow",
+        "title": "Open Flow",
+        "category": "Flow",
+        "icon": "$(window)"
+      },
+      {
+        "command": "flow.newFlow",
+        "title": "New Flow",
+        "category": "Flow",
+        "icon": "$(add)"
+      },
+      {
+        "command": "flow.newNode",
+        "title": "New Node",
+        "category": "Flow"
+      },
+      {
+        "command": "flow.refresh",
+        "title": "Refresh",
+        "category": "Flow",
+        "icon": "$(refresh)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "flow",
+          "title": "Flow",
+          "icon": "media/flow.svg"
+        }
+      ]
+    },
+    "views": {
+      "flow": [
+        {
+          "id": "flow.flowView",
+          "name": "Flow",
+          "type": "webview"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "flow.openFlow",
+          "when": "view == flow.flowView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "flow.newNode",
+          "when": "view == flow.flowView",
+          "group": "navigation@2"
+        },
+        {
+          "command": "flow.refresh",
+          "when": "view == flow.flowView",
+          "group": "navigation@3"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "check": "node --check src/extension.js && node --check media/flow.js"
+  }
+}

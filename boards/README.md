@@ -31,7 +31,7 @@ Kanban-style boards inside VS Code. Everything is stored in your workspace at
 
 ## Install permanently
 
-Download `boards-0.2.0.vsix` from <https://kthomasmurrayl.github.io/boards-and-notes/>, or:
+Download `boards-0.2.0.vsix` from <https://kthomasmurrayl.github.io/workspace-extensions/>, or:
 
 ```bash
 npx --yes @vscode/vsce package --allow-missing-repository

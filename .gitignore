@@ -1,5 +1,6 @@
 .DS_Store
 boards/*.vsix
 notes/*.vsix
+flow/*.vsix
 boards/trello/
 boards/notes/

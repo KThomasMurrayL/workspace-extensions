@@ -43,7 +43,7 @@ Markdown note taking in VS Code. Notes and images live inside your workspace (`n
 
 ## Install permanently
 
-Download `notes-0.2.0.vsix` from <https://kthomasmurrayl.github.io/boards-and-notes/>, or:
+Download `notes-0.2.0.vsix` from <https://kthomasmurrayl.github.io/workspace-extensions/>, or:
 
 ```bash
 npx --yes @vscode/vsce package --allow-missing-repository

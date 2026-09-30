@@ -18,12 +18,21 @@
       ]
     },
     {
-      "name": "Run Both Extensions",
+      "name": "Run Flow",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/flow"
+      ]
+    },
+    {
+      "name": "Run All Extensions",
       "type": "extensionHost",
       "request": "launch",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}/boards",
-        "--extensionDevelopmentPath=${workspaceFolder}/notes"
+        "--extensionDevelopmentPath=${workspaceFolder}/notes",
+        "--extensionDevelopmentPath=${workspaceFolder}/flow"
       ]
     }
   ]

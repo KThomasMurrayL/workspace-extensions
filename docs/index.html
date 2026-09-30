@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Boards & Notes — two small VS Code extensions that keep your kanban boards and markdown notes inside your workspace.">
-<title>Boards &amp; Notes — VS Code Extensions</title>
+<meta name="description" content="A small collection of VS Code extensions for boards, notes and flow charts — everything saved as plain files in your workspace.">
+<title>Workspace Extensions — VS Code extensions</title>
 <style>
   :root {
     color-scheme: light dark;
@@ -58,7 +58,7 @@
   }
 
   .container {
-    max-width: 980px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 0 var(--space-lg);
   }
@@ -94,7 +94,7 @@
   .hero p {
     font-size: clamp(19px, 2.4vw, 23px);
     color: var(--text-secondary);
-    max-width: 620px;
+    max-width: 640px;
     margin: 0 auto;
   }
 
@@ -109,12 +109,8 @@
   /* Cards */
   .cards {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: var(--space-lg);
-  }
-
-  @media (max-width: 780px) {
-    .cards { grid-template-columns: 1fr; }
   }
 
   .card {
@@ -133,6 +129,7 @@
 
   .card:nth-child(1) { animation-delay: 0.05s; }
   .card:nth-child(2) { animation-delay: 0.15s; }
+  .card:nth-child(3) { animation-delay: 0.25s; }
 
   .card-icon {
     width: 56px;
@@ -147,9 +144,10 @@
 
   .card-icon.boards { background: linear-gradient(135deg, #0071e3, #47a0f5); }
   .card-icon.notes  { background: linear-gradient(135deg, #6e6e73, #a1a1a6); }
+  .card-icon.flow   { background: linear-gradient(135deg, #7d3cf8, #bf5af2); }
 
   .card h2 {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 600;
     letter-spacing: -0.01em;
     margin: 0 0 var(--space-sm);
@@ -221,16 +219,6 @@
   .btn-primary:hover {
     background: var(--accent-hover);
     transform: scale(1.02);
-  }
-
-  .btn-secondary {
-    background: transparent;
-    color: var(--accent);
-    border: 1px solid var(--hairline);
-  }
-
-  .btn-secondary:hover {
-    background: var(--bg-secondary);
   }
 
   .btn-row {
@@ -387,8 +375,8 @@
 <header class="hero">
   <div class="container narrow">
     <div class="eyebrow">VS Code Extensions</div>
-    <h1>Boards &amp; Notes</h1>
-    <p>Two small extensions that keep your kanban boards and markdown notes inside your workspace. No accounts, no servers — just files.</p>
+    <h1>Workspace Extensions</h1>
+    <p>A growing collection of small extensions for planning, tracking and writing — everything saved as plain files in your own workspace.</p>
     <div class="meta">
       <span>Plain JavaScript</span>·<span>No dependencies</span>·<span>Data stays in your repo</span>
     </div>
@@ -447,6 +435,33 @@
         <div class="file-meta">notes-0.2.0.vsix · 10 KB</div>
       </article>
 
+      <article class="card">
+        <div class="card-icon flow" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="2" y="2" width="8" height="6" rx="1.2"/>
+            <rect x="14" y="16" width="8" height="6" rx="1.2"/>
+            <rect x="5.1" y="8" width="1.8" height="5"/>
+            <rect x="5.1" y="11.2" width="12.9" height="1.8"/>
+            <rect x="17.1" y="11.2" width="1.8" height="4.8"/>
+          </svg>
+        </div>
+        <h2>Flow</h2>
+        <p class="tagline">Flow charts for planning out a product or project.</p>
+        <ul class="features">
+          <li>Add nodes, drag them around, connect them with labelled arrows</li>
+          <li>Pan &amp; zoom canvas, multiple flows</li>
+          <li>Copy any flow as a markdown outline for your plan or PR</li>
+          <li>Saved to <code>flow/flow.json</code> in your workspace</li>
+        </ul>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="downloads/flow-0.1.0.vsix" download>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3v10.6l3.8-3.8 1.4 1.4L12 16.4l-5.2-5.2 1.4-1.4 3.8 3.8V3h2zM5 19h14v2H5v-2z"/></svg>
+            Download Flow
+          </a>
+        </div>
+        <div class="file-meta">flow-0.1.0.vsix · 15 KB</div>
+      </article>
+
     </div>
   </div>
 </section>
@@ -454,25 +469,26 @@
 <section class="steps-section">
   <div class="container">
     <h2>Install</h2>
-    <p class="subtitle">Download the extension, install it in VS Code, and you're done.</p>
+    <p class="subtitle">Download an extension, install it in VS Code, and you're done.</p>
 
     <ol class="steps">
       <li>
-        <strong>Download the .vsix file</strong>
-        <p>Use the buttons above, or grab the files from <a href="https://github.com/KThomasMurrayL/boards-and-notes/releases/latest">GitHub Releases</a>. The file lands in your Downloads folder.</p>
+        <strong>Download a .vsix file</strong>
+        <p>Use the buttons above, or grab the files from <a href="https://github.com/KThomasMurrayL/workspace-extensions/releases/latest">GitHub Releases</a>. The file lands in your Downloads folder.</p>
       </li>
       <li>
         <strong>Install it in VS Code</strong>
         <p>Open the Extensions view, click the <code>…</code> menu, and choose <em>Install from VSIX…</em> — or use the terminal:</p>
         <div class="terminal">
-          <button class="copy-btn" data-copy="code --install-extension ~/Downloads/boards-0.2.0.vsix" title="Copy">⧉</button>
+          <button class="copy-btn" title="Copy">⧉</button>
           <pre>code --install-extension ~/Downloads/boards-0.2.0.vsix
-code --install-extension ~/Downloads/notes-0.2.0.vsix</pre>
+code --install-extension ~/Downloads/notes-0.2.0.vsix
+code --install-extension ~/Downloads/flow-0.1.0.vsix</pre>
         </div>
       </li>
       <li>
         <strong>Reload and open a folder</strong>
-        <p>Run <em>Developer: Reload Window</em> from the Command Palette (⇧⌘P). The Boards and Notes icons appear in the activity bar of any folder you open.</p>
+        <p>Run <em>Developer: Reload Window</em> from the Command Palette (⇧⌘P). The Boards, Notes and Flow icons appear in the activity bar of any folder you open.</p>
       </li>
     </ol>
 
@@ -486,9 +502,9 @@ code --install-extension ~/Downloads/notes-0.2.0.vsix</pre>
 <footer>
   <div class="container">
     <p>
-      <a href="https://github.com/KThomasMurrayL/boards-and-notes">Source on GitHub</a>
+      <a href="https://github.com/KThomasMurrayL/workspace-extensions">Source on GitHub</a>
       &nbsp;·&nbsp; MIT licensed
-      &nbsp;·&nbsp; Your boards and notes live in your own repository
+      &nbsp;·&nbsp; Your boards, notes and flows live in your own repository
     </p>
   </div>
 </footer>
