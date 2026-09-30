@@ -1,0 +1,30 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Boards",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/boards"
+      ]
+    },
+    {
+      "name": "Run Obsidian Notes",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/obsidian-notes"
+      ]
+    },
+    {
+      "name": "Run Both Extensions",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/boards",
+        "--extensionDevelopmentPath=${workspaceFolder}/obsidian-notes"
+      ]
+    }
+  ]
+}

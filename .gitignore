@@ -1,0 +1,5 @@
+.DS_Store
+boards/*.vsix
+obsidian-notes/*.vsix
+boards/trello/
+boards/notes/

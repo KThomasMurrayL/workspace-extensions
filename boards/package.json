@@ -1,0 +1,102 @@
+{
+  "name": "boards",
+  "displayName": "Boards",
+  "description": "Kanban-style boards inside VS Code: lists (categories), cards, checklists and drag & drop, saved to your workspace.",
+  "version": "0.2.0",
+  "publisher": "local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "boards",
+    "kanban",
+    "trello",
+    "cards",
+    "tasks"
+  ],
+  "main": "./src/extension.js",
+  "activationEvents": [
+    "onView:boards.boardView",
+    "onCommand:boards.openBoard",
+    "onCommand:boards.newBoard",
+    "onCommand:boards.newList",
+    "onCommand:boards.newCard",
+    "onCommand:boards.refresh"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "boards.openBoard",
+        "title": "Open Board",
+        "category": "Boards",
+        "icon": "$(window)"
+      },
+      {
+        "command": "boards.newBoard",
+        "title": "New Board",
+        "category": "Boards",
+        "icon": "$(add)"
+      },
+      {
+        "command": "boards.newList",
+        "title": "New List",
+        "category": "Boards"
+      },
+      {
+        "command": "boards.newCard",
+        "title": "New Card",
+        "category": "Boards"
+      },
+      {
+        "command": "boards.refresh",
+        "title": "Refresh",
+        "category": "Boards",
+        "icon": "$(refresh)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "boards",
+          "title": "Boards",
+          "icon": "media/boards.svg"
+        }
+      ]
+    },
+    "views": {
+      "boards": [
+        {
+          "id": "boards.boardView",
+          "name": "Board",
+          "type": "webview"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "boards.openBoard",
+          "when": "view == boards.boardView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "boards.newCard",
+          "when": "view == boards.boardView",
+          "group": "navigation@2"
+        },
+        {
+          "command": "boards.refresh",
+          "when": "view == boards.boardView",
+          "group": "navigation@3"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "check": "node --check src/extension.js && node --check media/board.js"
+  }
+}

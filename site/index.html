@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Boards & Notes — two small VS Code extensions that keep your kanban boards and markdown notes inside your workspace.">
+<title>Boards &amp; Notes — VS Code Extensions</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f7;
+    --text-primary: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --accent: #0071e3;
+    --accent-hover: #0077ed;
+    --card-bg: rgba(255, 255, 255, 0.82);
+    --card-border: rgba(0, 0, 0, 0.06);
+    --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    --code-bg: #f5f5f7;
+    --hairline: rgba(0, 0, 0, 0.08);
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 48px;
+    --space-2xl: 96px;
+    --radius-card: 18px;
+    --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-primary: #000000;
+      --bg-secondary: #1d1d1f;
+      --text-primary: #f5f5f7;
+      --text-secondary: #a1a1a6;
+      --card-bg: rgba(29, 29, 31, 0.82);
+      --card-border: rgba(255, 255, 255, 0.09);
+      --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+      --code-bg: #1d1d1f;
+      --hairline: rgba(255, 255, 255, 0.12);
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    font-family: var(--font);
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+  }
+
+  .narrow { max-width: 680px; }
+
+  section { padding: var(--space-2xl) 0; }
+
+  /* Hero */
+  .hero {
+    padding: calc(var(--space-2xl) + var(--space-xl)) 0 var(--space-2xl);
+    text-align: center;
+    background: var(--bg-primary);
+  }
+
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--space-md);
+  }
+
+  .hero h1 {
+    font-size: clamp(40px, 7vw, 64px);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 var(--space-lg);
+  }
+
+  .hero p {
+    font-size: clamp(19px, 2.4vw, 23px);
+    color: var(--text-secondary);
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  .hero .meta {
+    margin-top: var(--space-lg);
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .hero .meta span { margin: 0 var(--space-sm); }
+
+  /* Cards */
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+  }
+
+  @media (max-width: 780px) {
+    .cards { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    padding: var(--space-xl) var(--space-lg) var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    animation: fadeUp 0.7s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  }
+
+  .card:nth-child(1) { animation-delay: 0.05s; }
+  .card:nth-child(2) { animation-delay: 0.15s; }
+
+  .card-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-lg);
+    color: #ffffff;
+  }
+
+  .card-icon.boards { background: linear-gradient(135deg, #0071e3, #47a0f5); }
+  .card-icon.notes  { background: linear-gradient(135deg, #6e6e73, #a1a1a6); }
+
+  .card h2 {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 var(--space-sm);
+  }
+
+  .card .tagline {
+    color: var(--text-secondary);
+    margin: 0 0 var(--space-lg);
+  }
+
+  .features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-lg);
+    flex: 1 1 auto;
+  }
+
+  .features li {
+    position: relative;
+    padding-left: 26px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: var(--text-primary);
+  }
+
+  .features li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 14px;
+    height: 14px;
+    background: var(--accent);
+    border-radius: 50%;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  .features code {
+    font-size: 13px;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-family: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, monospace;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 12px 24px;
+    border-radius: 980px;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #ffffff;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-hover);
+    transform: scale(1.02);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--hairline);
+  }
+
+  .btn-secondary:hover {
+    background: var(--bg-secondary);
+  }
+
+  .btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    align-items: center;
+  }
+
+  .file-meta {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+  }
+
+  /* Install steps */
+  .steps-section { background: var(--bg-secondary); }
+
+  .steps-section h2, .section-title {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-align: center;
+    margin: 0 0 var(--space-md);
+  }
+
+  .steps-section .subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    margin: 0 auto var(--space-xl);
+    max-width: 560px;
+  }
+
+  .steps {
+    list-style: none;
+    counter-reset: step;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 680px;
+  }
+
+  .steps li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 56px;
+    margin-bottom: var(--space-xl);
+  }
+
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: -2px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--bg-primary);
+    border: 1px solid var(--hairline);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .steps strong { display: block; margin-bottom: 6px; font-weight: 600; }
+  .steps p { margin: 0; color: var(--text-secondary); }
+
+  .terminal {
+    position: relative;
+    background: var(--code-bg);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: var(--space-md) 52px var(--space-md) var(--space-md);
+    margin-top: var(--space-md);
+    overflow-x: auto;
+  }
+
+  .terminal pre {
+    margin: 0;
+    font-family: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    white-space: pre;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--hairline);
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+
+  .copy-btn:hover { color: var(--text-primary); }
+
+  .note {
+    max-width: 680px;
+    margin: var(--space-lg) auto 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-align: center;
+  }
+
+  .note code {
+    font-family: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 6px;
+  }
+
+  /* Footer */
+  footer {
+    padding: var(--space-xl) 0 var(--space-2xl);
+    text-align: center;
+    border-top: 1px solid var(--hairline);
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card { animation: none; opacity: 1; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="container narrow">
+    <div class="eyebrow">VS Code Extensions</div>
+    <h1>Boards &amp; Notes</h1>
+    <p>Two small extensions that keep your kanban boards and markdown notes inside your workspace. No accounts, no servers — just files.</p>
+    <div class="meta">
+      <span>Plain JavaScript</span>·<span>No dependencies</span>·<span>Data stays in your repo</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="container">
+    <div class="cards">
+
+      <article class="card">
+        <div class="card-icon boards" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="3" y="3" width="5.4" height="18" rx="1.2"/>
+            <rect x="9.3" y="3" width="5.4" height="12" rx="1.2"/>
+            <rect x="15.6" y="3" width="5.4" height="15" rx="1.2"/>
+          </svg>
+        </div>
+        <h2>Boards</h2>
+        <p class="tagline">Trello-style kanban boards without leaving the editor.</p>
+        <ul class="features">
+          <li>Lists (categories), cards and checklists, with progress on each card</li>
+          <li>Drag &amp; drop cards between lists and reorder lists</li>
+          <li>Multiple boards, sidebar view and full editor tab</li>
+          <li>Saved to <code>boards/boards.json</code> in your workspace</li>
+        </ul>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="downloads/boards-0.2.0.vsix" download>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3v10.6l3.8-3.8 1.4 1.4L12 16.4l-5.2-5.2 1.4-1.4 3.8 3.8V3h2zM5 19h14v2H5v-2z"/></svg>
+            Download Boards
+          </a>
+        </div>
+        <div class="file-meta">boards-0.2.0.vsix · 13 KB</div>
+      </article>
+
+      <article class="card">
+        <div class="card-icon notes" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M5 2.5h9.2L20 8.3V21a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1zm8.4 1.8V9h4.7l-4.7-4.7zM7.5 12h9v1.6h-9V12zm0 3.4h6.5v1.6H7.5v-1.6z"/>
+          </svg>
+        </div>
+        <h2>Obsidian Notes</h2>
+        <p class="tagline">A lightweight markdown note vault in your sidebar.</p>
+        <ul class="features">
+          <li>Notes tree, folders and daily notes</li>
+          <li><code>[[wiki links]]</code> with autocomplete between notes</li>
+          <li>Upload images — copied to <code>notes/assets/</code> and linked at the cursor</li>
+          <li>Saved to <code>notes/</code> in your workspace</li>
+        </ul>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="downloads/obsidian-notes-0.1.0.vsix" download>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3v10.6l3.8-3.8 1.4 1.4L12 16.4l-5.2-5.2 1.4-1.4 3.8 3.8V3h2zM5 19h14v2H5v-2z"/></svg>
+            Download Notes
+          </a>
+        </div>
+        <div class="file-meta">obsidian-notes-0.1.0.vsix · 10 KB</div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section class="steps-section">
+  <div class="container">
+    <h2>Install</h2>
+    <p class="subtitle">Download the extension, install it in VS Code, and you're done.</p>
+
+    <ol class="steps">
+      <li>
+        <strong>Download the .vsix file</strong>
+        <p>Use the buttons above. The file lands in your Downloads folder.</p>
+      </li>
+      <li>
+        <strong>Install it in VS Code</strong>
+        <p>Open the Extensions view, click the <code>…</code> menu, and choose <em>Install from VSIX…</em> — or use the terminal:</p>
+        <div class="terminal">
+          <button class="copy-btn" data-copy="code --install-extension ~/Downloads/boards-0.2.0.vsix" title="Copy">⧉</button>
+          <pre>code --install-extension ~/Downloads/boards-0.2.0.vsix
+code --install-extension ~/Downloads/obsidian-notes-0.1.0.vsix</pre>
+        </div>
+      </li>
+      <li>
+        <strong>Reload and open a folder</strong>
+        <p>Run <em>Developer: Reload Window</em> from the Command Palette (⇧⌘P). The Boards and Notes icons appear in the activity bar of any folder you open.</p>
+      </li>
+    </ol>
+
+    <p class="note">
+      macOS tip: if the <code>code</code> command isn't set up, run
+      <code>"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"</code> instead.
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>
+      <a href="https://github.com/KThomasMurrayL/boards-and-notes">Source on GitHub</a>
+      &nbsp;·&nbsp; MIT licensed
+      &nbsp;·&nbsp; Your boards and notes live in your own repository
+    </p>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.copy-btn').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var text = button.getAttribute('data-copy');
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function () {
+          button.textContent = '✓';
+          setTimeout(function () { button.textContent = '⧉'; }, 1500);
+        });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,358 @@
+:root {
+  color-scheme: light dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--vscode-font-family);
+  font-size: var(--vscode-font-size, 13px);
+  color: var(--vscode-foreground);
+  background: var(--vscode-editor-background);
+}
+
+button {
+  font: inherit;
+  color: var(--vscode-button-secondaryForeground);
+  background: var(--vscode-button-secondaryBackground);
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--vscode-button-secondaryHoverBackground, var(--vscode-button-secondaryBackground));
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+button.primary {
+  color: var(--vscode-button-foreground);
+  background: var(--vscode-button-background);
+}
+
+button.primary:hover {
+  background: var(--vscode-button-hoverBackground, var(--vscode-button-background));
+}
+
+button.danger {
+  color: var(--vscode-errorForeground);
+  background: transparent;
+  border-color: var(--vscode-errorForeground);
+}
+
+button.danger:hover {
+  background: var(--vscode-inputValidation-errorBackground, rgba(255, 0, 0, 0.12));
+}
+
+select,
+input[type='text'],
+textarea {
+  font: inherit;
+  color: var(--vscode-input-foreground);
+  background: var(--vscode-input-background);
+  border: 1px solid var(--vscode-input-border, transparent);
+  border-radius: 4px;
+  padding: 4px 8px;
+  outline: none;
+}
+
+select:focus,
+input:focus,
+textarea:focus {
+  border-color: var(--vscode-focusBorder);
+}
+
+.toolbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--vscode-panel-border, rgba(128, 128, 128, 0.25));
+}
+
+.toolbar select {
+  max-width: 220px;
+}
+
+.grow {
+  flex: 1 1 auto;
+}
+
+.board {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-height: 0;
+}
+
+.list {
+  flex: 0 0 auto;
+  width: min(280px, 80vw);
+  max-height: 100%;
+  min-height: 60px;
+  display: flex;
+  flex-direction: column;
+  background: var(--vscode-sideBar-background, rgba(128, 128, 128, 0.08));
+  border: 1px solid var(--vscode-panel-border, rgba(128, 128, 128, 0.2));
+  border-radius: 8px;
+}
+
+.list.drag-over {
+  border-color: var(--vscode-focusBorder);
+}
+
+.list-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  font-weight: 600;
+}
+
+.list-title {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: text;
+}
+
+.list-count {
+  font-weight: 400;
+  opacity: 0.6;
+}
+
+.icon-btn {
+  padding: 0 6px;
+  min-width: 22px;
+  line-height: 20px;
+  background: transparent;
+  color: var(--vscode-foreground);
+  border: none;
+  border-radius: 4px;
+  opacity: 0.75;
+}
+
+.icon-btn:hover {
+  background: var(--vscode-toolbar-hoverBackground, rgba(128, 128, 128, 0.2));
+  opacity: 1;
+}
+
+.cards {
+  flex: 1 1 auto;
+  min-height: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 8px 4px;
+  overflow-y: auto;
+}
+
+.card {
+  background: var(--vscode-editor-background);
+  border: 1px solid var(--vscode-panel-border, rgba(128, 128, 128, 0.25));
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.card:hover {
+  border-color: var(--vscode-focusBorder);
+}
+
+.card.dragging {
+  opacity: 0.55;
+}
+
+.card-title {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.card-meta {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+  opacity: 0.75;
+  font-size: 0.9em;
+}
+
+.badge-done {
+  color: var(--vscode-testing-iconPassed, #3fb950);
+}
+
+.add-card {
+  margin: 4px 8px 8px;
+  text-align: left;
+  background: transparent;
+  color: var(--vscode-foreground);
+  opacity: 0.7;
+}
+
+.add-card:hover {
+  opacity: 1;
+  background: var(--vscode-toolbar-hoverBackground, rgba(128, 128, 128, 0.15));
+}
+
+.add-list {
+  flex: 0 0 auto;
+  width: min(280px, 80vw);
+  padding: 10px;
+  color: var(--vscode-foreground);
+  background: rgba(128, 128, 128, 0.08);
+  border: 1px dashed var(--vscode-panel-border, rgba(128, 128, 128, 0.35));
+}
+
+.composer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 4px 8px 8px;
+}
+
+.composer-input {
+  width: 100%;
+  resize: vertical;
+}
+
+.composer-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.inline-edit {
+  width: 100%;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 16px;
+  background: rgba(0, 0, 0, 0.45);
+  overflow-y: auto;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.dialog {
+  width: min(560px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--vscode-editorWidget-background, var(--vscode-editor-background));
+  border: 1px solid var(--vscode-editorWidget-border, var(--vscode-panel-border, rgba(128, 128, 128, 0.35)));
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.dialog.small {
+  width: min(380px, 100%);
+  margin-top: 10vh;
+}
+
+.dialog h3 {
+  margin: 0;
+}
+
+.dialog-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dialog-actions.right {
+  justify-content: flex-end;
+}
+
+.card-title-input {
+  font-size: 1.15em;
+  font-weight: 600;
+}
+
+.card-desc-input {
+  resize: vertical;
+}
+
+.checklist-head {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.muted {
+  opacity: 0.6;
+}
+
+.checklist-items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checklist-item .checklist-text {
+  flex: 1 1 auto;
+  word-break: break-word;
+}
+
+.checklist-item.done .checklist-text {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.checklist-new {
+  width: 100%;
+  margin-top: 6px;
+}
+
+.empty {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  text-align: center;
+  padding: 24px;
+  opacity: 0.85;
+}
+
+.empty.error {
+  color: var(--vscode-errorForeground);
+}

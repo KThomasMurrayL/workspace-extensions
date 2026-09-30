@@ -1,0 +1,5 @@
+.vscode/**
+*.vsix
+trello/**
+notes/**
+.DS_Store
