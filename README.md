@@ -13,7 +13,7 @@ and can be committed to git.
 
 - `boards/` — **Boards** extension source (kanban)
 - `obsidian-notes/` — **Obsidian Notes** extension source
-- `site/` — GitHub Pages download page (Pages serves from the `/site` folder)
+- `docs/` — GitHub Pages download page (Pages serves from the `/docs` folder)
 
 ## Download
 
@@ -56,7 +56,7 @@ for the **Boards** and **Notes** icons in the activity bar.
 ```bash
 cd boards && npx --yes @vscode/vsce package --allow-missing-repository
 cd ../obsidian-notes && npx --yes @vscode/vsce package --allow-missing-repository
-# then copy the new .vsix files into site/downloads/ and push site/
+# then copy the new .vsix files into docs/downloads/ and push
 ```
 
 No `npm install` or build step is needed — both extensions are plain JavaScript.
