@@ -38,11 +38,11 @@ the whole plan, then paste it into your README or issue tracker.
 
 ## Install permanently
 
-Download `flow-0.1.0.vsix` from <https://kthomasmurrayl.github.io/workspace-extensions/>, or:
+Download `flow-0.1.1.vsix` from <https://kthomasmurrayl.github.io/workspace-extensions/>, or:
 
 ```bash
 npx --yes @vscode/vsce package --allow-missing-repository
-"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" --install-extension flow-0.1.0.vsix
+"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" --install-extension flow-0.1.1.vsix
 ```
 
 ## Storage format

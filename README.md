@@ -24,7 +24,7 @@ Direct downloads:
 
 - <https://kthomasmurrayl.github.io/workspace-extensions/downloads/boards-0.2.0.vsix>
 - <https://kthomasmurrayl.github.io/workspace-extensions/downloads/notes-0.2.0.vsix>
-- <https://kthomasmurrayl.github.io/workspace-extensions/downloads/flow-0.1.0.vsix>
+- <https://kthomasmurrayl.github.io/workspace-extensions/downloads/flow-0.1.1.vsix>
 
 Or from GitHub Releases: <https://github.com/KThomasMurrayL/workspace-extensions/releases>
 
@@ -34,7 +34,7 @@ Install a file via the Extensions view → `…` → **Install from VSIX…**, o
 CODE="/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"
 "$CODE" --install-extension ~/Downloads/boards-0.2.0.vsix
 "$CODE" --install-extension ~/Downloads/notes-0.2.0.vsix
-"$CODE" --install-extension ~/Downloads/flow-0.1.0.vsix
+"$CODE" --install-extension ~/Downloads/flow-0.1.1.vsix
 ```
 
 ## Status: installed ✅
@@ -43,7 +43,7 @@ All three extensions are installed in this Mac's VS Code:
 
 - `local.boards@0.2.0`
 - `local.notes@0.2.0`
-- `local.flow@0.1.0`
+- `local.flow@0.1.1`
 
 Reload VS Code (`Cmd+Shift+P` → **Developer: Reload Window**), open any folder, and look
 for the **Boards**, **Notes** and **Flow** icons in the activity bar.

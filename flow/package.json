@@ -2,7 +2,7 @@
   "name": "flow",
   "displayName": "Flow",
   "description": "Flow charts and project planning inside VS Code: nodes, arrows, multiple flows, saved to your workspace.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "local",
   "license": "MIT",
   "engines": {

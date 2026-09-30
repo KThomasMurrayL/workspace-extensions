@@ -16,6 +16,7 @@
     btnDeleteFlow: document.getElementById('btn-delete-flow'),
     btnNewNode: document.getElementById('btn-new-node'),
     btnOutline: document.getElementById('btn-outline'),
+    btnClearFlow: document.getElementById('btn-clear-flow'),
     btnZoomOut: document.getElementById('btn-zoom-out'),
     btnZoomIn: document.getElementById('btn-zoom-in'),
     zoomLabel: document.getElementById('zoom-label'),
@@ -173,6 +174,7 @@
     els.btnDeleteFlow.disabled = !hasFlow;
     els.btnNewNode.disabled = !hasFlow;
     els.btnOutline.disabled = !hasFlow;
+    els.btnClearFlow.disabled = !hasFlow;
     els.btnFit.disabled = !hasFlow;
   }
 
@@ -655,6 +657,23 @@
   els.btnNewFlow.addEventListener('click', newFlowFlow);
   els.btnNewNode.addEventListener('click', addNodeCentered);
   els.btnOutline.addEventListener('click', copyOutline);
+
+  els.btnClearFlow.addEventListener('click', () => {
+    const flow = currentFlow();
+    if (!flow || (!flow.nodes.length && !flow.edges.length)) {
+      return;
+    }
+    askConfirm(
+      `Clear flow \u201c${flow.name}\u201d? This removes all ${flow.nodes.length} node(s) and ${flow.edges.length} edge(s).`,
+      'Clear',
+      () => {
+        flow.nodes = [];
+        flow.edges = [];
+        queueSave();
+        renderCanvas();
+      }
+    );
+  });
   els.btnZoomIn.addEventListener('click', () => zoomBy(1.2));
   els.btnZoomOut.addEventListener('click', () => zoomBy(1 / 1.2));
   els.btnFit.addEventListener('click', fitView);

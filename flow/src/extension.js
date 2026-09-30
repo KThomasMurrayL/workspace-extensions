@@ -163,6 +163,7 @@ function getHtml(webview) {
     <span class="grow"></span>
     <button id="btn-new-node" class="primary" title="Add a node to the current flow">+ Node</button>
     <button id="btn-outline" title="Copy this flow as a markdown outline">Copy outline</button>
+    <button id="btn-clear-flow" class="danger" title="Remove all nodes and edges from the current flow">Clear</button>
     <span class="sep"></span>
     <button id="btn-zoom-out" class="icon-btn" title="Zoom out">\u2212</button>
     <span id="zoom-label" class="zoom-label">100%</span>
