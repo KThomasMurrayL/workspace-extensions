@@ -299,6 +299,8 @@
 
   .steps strong { display: block; margin-bottom: 6px; font-weight: 600; }
   .steps p { margin: 0; color: var(--text-secondary); }
+  .steps a, .note a { color: var(--accent); text-decoration: none; }
+  .steps a:hover, .note a:hover { text-decoration: underline; }
 
   .terminal {
     position: relative;
@@ -457,7 +459,7 @@
     <ol class="steps">
       <li>
         <strong>Download the .vsix file</strong>
-        <p>Use the buttons above. The file lands in your Downloads folder.</p>
+        <p>Use the buttons above, or grab the files from <a href="https://github.com/KThomasMurrayL/boards-and-notes/releases/latest">GitHub Releases</a>. The file lands in your Downloads folder.</p>
       </li>
       <li>
         <strong>Install it in VS Code</strong>
