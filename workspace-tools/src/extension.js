@@ -4,7 +4,8 @@ const crypto = require('crypto');
 const { ConnectionStore, uid, secretKey, resolvePath } = require('./store');
 const { createSession } = require('./drivers');
 const { getHtml } = require('./webview');
-const { BookmarksManager, CATEGORIES } = require('./bookmarks');
+const { BookmarksManager, CATEGORIES, categoryLabel } = require('./bookmarks');
+const { parseChecklistItems, noteFromCard, sanitizeFileName } = require('./transforms');
 
 const VIEW_ID = 'workspaceTools.view';
 const NETWORK_TYPES = ['postgres', 'mysql', 'mssql'];
@@ -477,6 +478,45 @@ function broadcastBookmarks(skip) {
   );
 }
 
+// ------------------------------------------------------- cross-tool actions
+
+async function broadcastNotesList(skip) {
+  const notes = await listNotes();
+  broadcast({ type: 'notes-list', notes }, skip);
+}
+
+async function createBoardWithCards(boardName, listName, cards) {
+  await loadBoards();
+  const board = {
+    id: uid(),
+    name: boardName,
+    lists: [{ id: uid(), name: listName, cards }],
+  };
+  boardsData.boards.push(board);
+  boardsData.lastBoardId = board.id;
+  await saveBoards();
+  broadcast({ type: 'boards-state', data: boardsData });
+  return board;
+}
+
+async function createNote(name, content) {
+  const dir = notesDirUri();
+  await vscode.workspace.fs.createDirectory(dir);
+  const base = sanitizeFileName(String(name).replace(/\.(md|markdown)$/i, ''));
+  let fileName = `${base}.md`;
+  let uri = vscode.Uri.joinPath(dir, fileName);
+  let counter = 2;
+  while (await exists(uri)) {
+    fileName = `${base}-${counter}.md`;
+    uri = vscode.Uri.joinPath(dir, fileName);
+    counter += 1;
+  }
+  const text = content.endsWith('\n') ? content : `${content}\n`;
+  await vscode.workspace.fs.writeFile(uri, Buffer.from(text, 'utf8'));
+  await broadcastNotesList();
+  return fileName;
+}
+
 async function sendBoardsState(webview) {
   const data = await loadBoards();
   webview.postMessage({ type: 'boards-state', data });
@@ -768,6 +808,115 @@ async function handleMessage(message, webview, context) {
           category: typeof message.category === 'string' ? message.category : undefined,
         });
         break;
+
+      // ---- cross-tool actions
+      case 'flow-to-board': {
+        const items = Array.isArray(message.items) ? message.items.slice(0, 200) : [];
+        if (!items.length) {
+          break;
+        }
+        const cards = items.map(item =>
+          createCard(
+            String(item.title || 'Step').slice(0, 200),
+            item.next ? `Next: ${String(item.next).slice(0, 300)}` : 'Created from a flow.'
+          )
+        );
+        const board = await createBoardWithCards(
+          `${String(message.name || 'Flow')} (Flow)`,
+          'Tasks',
+          cards
+        );
+        webview.postMessage({ type: 'switch-tab', tab: 'boards' });
+        vscode.window.showInformationMessage(
+          `Created board \u201c${board.name}\u201d with ${cards.length} card(s).`
+        );
+        break;
+      }
+      case 'flow-to-note': {
+        const name = String(message.name || 'Flow');
+        const text = String(message.text || '').trim();
+        if (!text) {
+          break;
+        }
+        const fileName = await createNote(name, text);
+        webview.postMessage({ type: 'switch-tab', tab: 'notes' });
+        vscode.window.showInformationMessage(`Created note \u201c${fileName}\u201d.`);
+        break;
+      }
+      case 'notes-to-board': {
+        const items = parseChecklistItems(String(message.text || ''));
+        if (!items.length) {
+          webview.postMessage({
+            type: 'notes-error',
+            message: 'No checklist items (- [ ]) found in this note.',
+          });
+          break;
+        }
+        const cards = items.map(item => ({
+          id: uid(),
+          title: item.text.slice(0, 200),
+          description: '',
+          checklist: [{ id: uid(), text: item.text.slice(0, 200), done: item.done }],
+          createdAt: Date.now(),
+        }));
+        const board = await createBoardWithCards(
+          `${String(message.name || 'Note')} (Note)`,
+          'Checklist',
+          cards
+        );
+        webview.postMessage({ type: 'switch-tab', tab: 'boards' });
+        vscode.window.showInformationMessage(
+          `Created board \u201c${board.name}\u201d with ${cards.length} card(s).`
+        );
+        break;
+      }
+      case 'bookmark-to-board': {
+        const bookmark = bookmarksManager
+          .list()
+          .find(candidate => candidate.id === message.id);
+        if (!bookmark) {
+          break;
+        }
+        const title = (
+          bookmark.comment ||
+          bookmark.text ||
+          `${bookmark.file}:${bookmark.line + 1}`
+        ).slice(0, 200);
+        const description =
+          `${bookmark.file}:${bookmark.line + 1}` +
+          (bookmark.category ? `\n\nCategory: ${categoryLabel(bookmark.category)}` : '') +
+          (bookmark.text ? `\n\n${bookmark.text}` : '');
+        await loadBoards();
+        let board = boardsData.boards.find(candidate => candidate.name === 'Bookmarks');
+        if (!board) {
+          board = { id: uid(), name: 'Bookmarks', lists: [] };
+          boardsData.boards.push(board);
+        }
+        let list = board.lists.find(candidate => candidate.name === 'To Do');
+        if (!list) {
+          list = { id: uid(), name: 'To Do', cards: [] };
+          board.lists.push(list);
+        }
+        list.cards.push(createCard(title, description));
+        boardsData.lastBoardId = board.id;
+        await saveBoards();
+        broadcast({ type: 'boards-state', data: boardsData });
+        webview.postMessage({ type: 'switch-tab', tab: 'boards' });
+        vscode.window.showInformationMessage(`Created a card from the bookmark.`);
+        break;
+      }
+      case 'card-to-note': {
+        const title = String(message.title || 'Card');
+        const content = noteFromCard({
+          title,
+          description: String(message.description || ''),
+          checklist: Array.isArray(message.checklist) ? message.checklist : [],
+        });
+        const fileName = await createNote(title, content);
+        webview.postMessage({ type: 'switch-tab', tab: 'notes' });
+        vscode.window.showInformationMessage(`Created note \u201c${fileName}\u201d.`);
+        break;
+      }
 
       default:
         break;

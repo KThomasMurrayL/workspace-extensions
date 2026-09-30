@@ -1,6 +1,6 @@
-# Workspace Tools (local test build)
+# Workspace Tools
 
-All four extensions in one, with a tab bar:
+All the workspace tools in one extension, with a tab bar:
 
 - **Boards** — kanban boards (`boards/boards.json`)
 - **Notes** — markdown notes with image insert and preview (`notes/`)
@@ -8,6 +8,18 @@ All four extensions in one, with a tab bar:
 - **Database** — SQLite, PostgreSQL, MySQL/MariaDB, SQL Server, CSV/TSV/JSON (`database/connections.json`)
 - **Bookmarks** — bookmark a line or selection in the editor with a category and a comment;
   comments show inline, and the Bookmarks tab lists/filters them (`bookmarks/bookmarks.json`)
+
+## Cross-tool actions
+
+The tools work together — after each action the panel switches to the destination tab:
+
+- **Flow → Board** — every node becomes a card in flow order; the description lists the next
+  steps with their edge labels.
+- **Flow → Note** — saves the flow outline as a markdown note.
+- **Note → Board** — turns `- [ ]` / `- [x]` checklist items into cards, preserving done state.
+- **Bookmark → Board** — creates a card with the comment, `file:line`, snippet and category
+  in a "Bookmarks" board.
+- **Card → Note** — saves a card (description + checklist) as a note.
 
 ## Bookmarks
 
@@ -23,8 +35,8 @@ All four extensions in one, with a tab bar:
 - Bookmarks track the code: if lines move, the snippet is found again automatically.
 - Everything saves to `bookmarks/bookmarks.json` in the workspace.
 
-This build is **local only** — it is not packaged for the public repo. It reuses the same
-storage folders as the individual extensions, so your existing data shows up as-is.
+This build reuses the same storage folders as the individual extensions, so your existing data
+shows up as-is.
 
 ## Run it
 

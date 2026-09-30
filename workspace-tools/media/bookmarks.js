@@ -187,6 +187,10 @@
 
       const actions = document.createElement('div');
       actions.className = 'bm-actions';
+      const toBoard = document.createElement('button');
+      toBoard.className = 'bm-btn';
+      toBoard.textContent = '\u2192';
+      toBoard.title = 'Create a card in Boards from this bookmark';
       const edit = document.createElement('button');
       edit.className = 'bm-btn';
       edit.textContent = '\u270e';
@@ -195,6 +199,7 @@
       remove.className = 'bm-btn';
       remove.textContent = '\u2715';
       remove.title = 'Delete bookmark';
+      actions.appendChild(toBoard);
       actions.appendChild(edit);
       actions.appendChild(remove);
 
@@ -204,6 +209,10 @@
 
       row.addEventListener('click', () => {
         vscode.postMessage({ type: 'bookmarks-open', id: bookmark.id });
+      });
+      toBoard.addEventListener('click', event => {
+        event.stopPropagation();
+        vscode.postMessage({ type: 'bookmark-to-board', id: bookmark.id });
       });
       edit.addEventListener('click', event => {
         event.stopPropagation();

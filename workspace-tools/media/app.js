@@ -23,6 +23,13 @@
     tab.addEventListener('click', () => show(tab.dataset.tab));
   });
 
+  window.addEventListener('message', event => {
+    const message = event.data;
+    if (message && message.type === 'switch-tab' && message.tab) {
+      show(message.tab);
+    }
+  });
+
   let saved = null;
   try {
     saved = vscode.getState();

@@ -9,6 +9,7 @@
     title: document.getElementById('notes-title'),
     btnImage: document.getElementById('notes-btn-image'),
     btnPreview: document.getElementById('notes-btn-preview'),
+    btnToBoard: document.getElementById('notes-btn-to-board'),
     error: document.getElementById('notes-error'),
     editor: document.getElementById('notes-editor'),
     preview: document.getElementById('notes-preview'),
@@ -189,6 +190,19 @@
     flushSave();
     vscode.postMessage({ type: 'notes-preview', path: current.path });
     setPreviewMode(true);
+  });
+
+  els.btnToBoard.addEventListener('click', () => {
+    if (!current) {
+      showError('Open a note first.');
+      return;
+    }
+    flushSave();
+    vscode.postMessage({
+      type: 'notes-to-board',
+      name: current.name,
+      text: els.editor.value,
+    });
   });
 
   els.editor.addEventListener('input', () => {

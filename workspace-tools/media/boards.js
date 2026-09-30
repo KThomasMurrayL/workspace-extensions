@@ -16,6 +16,7 @@
     checklistItems: document.getElementById('boards-checklist-items'),
     checklistNew: document.getElementById('boards-checklist-new'),
     btnCardDelete: document.getElementById('boards-btn-card-delete'),
+    btnCardNote: document.getElementById('boards-btn-card-note'),
     btnCardClose: document.getElementById('boards-btn-card-close'),
     inputOverlay: document.getElementById('boards-input-overlay'),
     inputTitle: document.getElementById('boards-input-title'),
@@ -599,6 +600,18 @@
     renderChecklist();
   });
   els.btnCardClose.addEventListener('click', closeCard);
+  els.btnCardNote.addEventListener('click', () => {
+    const card = activeCardId ? findCard(activeCardId) : null;
+    if (!card) {
+      return;
+    }
+    vscode.postMessage({
+      type: 'card-to-note',
+      title: card.title || 'Card',
+      description: card.description || '',
+      checklist: card.checklist || [],
+    });
+  });
   els.btnCardDelete.addEventListener('click', () => {
     const card = activeCardId ? findCard(activeCardId) : null;
     if (!card) {

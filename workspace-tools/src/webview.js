@@ -56,6 +56,7 @@ function getHtml(webview, extensionUri) {
           </div>
           <div class="dialog-actions">
             <button id="boards-btn-card-delete" class="danger">Delete card</button>
+            <button id="boards-btn-card-note" title="Save this card as a note">\u2192 Note</button>
             <span class="grow"></span>
             <button id="boards-btn-card-close" class="primary">Close</button>
           </div>
@@ -104,6 +105,7 @@ function getHtml(webview, extensionUri) {
             <span id="notes-title" class="notes-title">No note open</span>
             <button id="notes-btn-image" title="Copy an image into notes/assets and insert it">Image</button>
             <button id="notes-btn-preview" title="Toggle preview">Preview</button>
+            <button id="notes-btn-to-board" title="Create cards from the checklist items in this note">\u2192 Board</button>
           </div>
           <div id="notes-error" class="notes-error hidden"></div>
           <textarea id="notes-editor" class="notes-editor" spellcheck="false" placeholder="Select or create a note\u2026"></textarea>
@@ -140,6 +142,8 @@ function getHtml(webview, extensionUri) {
         <span class="grow"></span>
         <button id="flow-btn-new-node" class="primary" title="Add a node to the current flow">+ Node</button>
         <button id="flow-btn-outline" title="Copy this flow as a markdown outline">Copy outline</button>
+        <button id="flow-btn-to-board" title="Create a board with one card per node">\u2192 Board</button>
+        <button id="flow-btn-to-note" title="Save this flow as a note">\u2192 Note</button>
         <button id="flow-btn-clear-flow" class="danger" title="Remove all nodes and edges from the current flow">Clear</button>
         <span class="sep"></span>
         <button id="flow-btn-zoom-out" class="icon-btn" title="Zoom out">\u2212</button>

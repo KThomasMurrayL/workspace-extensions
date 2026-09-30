@@ -17,6 +17,8 @@
     btnDeleteFlow: document.getElementById('flow-btn-delete-flow'),
     btnNewNode: document.getElementById('flow-btn-new-node'),
     btnOutline: document.getElementById('flow-btn-outline'),
+    btnToBoard: document.getElementById('flow-btn-to-board'),
+    btnToNote: document.getElementById('flow-btn-to-note'),
     btnClearFlow: document.getElementById('flow-btn-clear-flow'),
     btnZoomOut: document.getElementById('flow-btn-zoom-out'),
     btnZoomIn: document.getElementById('flow-btn-zoom-in'),
@@ -646,6 +648,72 @@
     return lines.join('\n') + '\n';
   }
 
+  function flowItemsForBoard(flow) {
+    const incoming = new Set(flow.edges.map(edge => edge.to));
+    const roots = flow.nodes.filter(node => !incoming.has(node.id));
+    const items = [];
+    const visited = new Set();
+    const walk = node => {
+      const next = flow.edges
+        .filter(edge => edge.from === node.id)
+        .map(edge => {
+          const target = findNode(flow, edge.to);
+          if (!target) {
+            return null;
+          }
+          return `${target.text}${edge.label ? ` (${edge.label})` : ''}`;
+        })
+        .filter(Boolean);
+      items.push({ title: node.text, next: next.join(', ') });
+      visited.add(node.id);
+      for (const edge of flow.edges) {
+        if (edge.from !== node.id) {
+          continue;
+        }
+        const target = findNode(flow, edge.to);
+        if (target && !visited.has(target.id)) {
+          walk(target);
+        }
+      }
+    };
+    for (const root of roots) {
+      if (!visited.has(root.id)) {
+        walk(root);
+      }
+    }
+    for (const node of flow.nodes) {
+      if (!visited.has(node.id)) {
+        visited.add(node.id);
+        items.push({ title: node.text, next: '' });
+      }
+    }
+    return items;
+  }
+
+  function sendToBoard() {
+    const flow = currentFlow();
+    if (!flow || !flow.nodes.length) {
+      return;
+    }
+    vscode.postMessage({
+      type: 'flow-to-board',
+      name: flow.name,
+      items: flowItemsForBoard(flow),
+    });
+  }
+
+  function sendToNote() {
+    const flow = currentFlow();
+    if (!flow || !flow.nodes.length) {
+      return;
+    }
+    vscode.postMessage({
+      type: 'flow-to-note',
+      name: flow.name,
+      text: buildOutline(flow),
+    });
+  }
+
   function copyOutline() {
     const flow = currentFlow();
     if (!flow) {
@@ -712,6 +780,8 @@
   els.btnNewFlow.addEventListener('click', newFlowFlow);
   els.btnNewNode.addEventListener('click', addNodeCentered);
   els.btnOutline.addEventListener('click', copyOutline);
+  els.btnToBoard.addEventListener('click', sendToBoard);
+  els.btnToNote.addEventListener('click', sendToNote);
 
   els.btnClearFlow.addEventListener('click', () => {
     const flow = currentFlow();

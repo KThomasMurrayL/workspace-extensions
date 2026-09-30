@@ -2,7 +2,7 @@
   "name": "workspace-tools",
   "displayName": "Workspace Tools",
   "description": "Boards, Notes, Flow and Database in one extension with tabs. Everything is stored in your workspace. Local test build.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "publisher": "local",
   "license": "MIT",
   "engines": {
