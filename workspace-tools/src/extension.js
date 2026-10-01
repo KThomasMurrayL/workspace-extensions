@@ -1,7 +1,7 @@
 const vscode = require('vscode');
 const path = require('path');
 const crypto = require('crypto');
-const { ConnectionStore, uid, secretKey, resolvePath } = require('./store');
+const { ConnectionStore, uid, secretKey, resolvePath, utilitiesUri, storedUri, connectionsFileUri, migrateLegacyStorage } = require('./store');
 const { createSession } = require('./drivers');
 const { getHtml } = require('./webview');
 const { BookmarksManager, CATEGORIES, categoryLabel } = require('./bookmarks');
@@ -12,6 +12,7 @@ const NETWORK_TYPES = ['postgres', 'mysql', 'mssql'];
 const FILE_TYPES = ['csv', 'tsv', 'json', 'sqlite'];
 const SQLITE_EXTENSIONS = ['db', 'sqlite', 'sqlite3', 'db3'];
 const IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'bmp'];
+const NODE_TYPES = ['process', 'decision', 'terminator', 'input', 'database', 'document', 'note', 'hexagon', 'circle'];
 
 let extensionUri;
 let panel = null;
@@ -34,10 +35,6 @@ function workspaceFolder() {
     throw new Error('Open a folder first \u2014 Workspace Tools saves everything in the workspace.');
   }
   return folder;
-}
-
-function fileUri(...parts) {
-  return vscode.Uri.joinPath(workspaceFolder().uri, ...parts);
 }
 
 async function exists(uri) {
@@ -125,29 +122,28 @@ async function loadBoards() {
   if (boardsData) {
     return boardsData;
   }
-  const uri = fileUri('boards', 'boards.json');
+  const uri = utilitiesUri('boards', 'boards.json');
   try {
     const bytes = await vscode.workspace.fs.readFile(uri);
     boardsData = normalizeBoards(JSON.parse(new TextDecoder().decode(bytes)));
   } catch {
     boardsData = defaultBoards();
-    await writeJson(uri, boardsData);
   }
   return boardsData;
 }
 
 async function saveBoards() {
-  await writeJson(fileUri('boards', 'boards.json'), boardsData);
+  await writeJson(utilitiesUri('boards', 'boards.json'), boardsData);
 }
 
 // ---------------------------------------------------------------- flow
 
 function defaultFlow() {
-  const idea = { id: uid(), x: 80, y: 140, text: 'Idea' };
-  const plan = { id: uid(), x: 340, y: 140, text: 'Plan' };
-  const build = { id: uid(), x: 600, y: 140, text: 'Build' };
-  const ship = { id: uid(), x: 860, y: 140, text: 'Ship' };
-  const feedback = { id: uid(), x: 600, y: 360, text: 'Feedback' };
+  const idea = { id: uid(), x: 80, y: 140, text: 'Idea', type: 'process' };
+  const plan = { id: uid(), x: 340, y: 140, text: 'Plan', type: 'process' };
+  const build = { id: uid(), x: 600, y: 140, text: 'Build', type: 'process' };
+  const ship = { id: uid(), x: 860, y: 140, text: 'Ship', type: 'process' };
+  const feedback = { id: uid(), x: 600, y: 360, text: 'Feedback', type: 'process' };
   const flow = {
     id: uid(),
     name: 'Product Flow',
@@ -180,6 +176,9 @@ function normalizeFlow(value) {
       if (typeof node.text !== 'string') {
         node.text = String(node.text || 'Node');
       }
+      if (!NODE_TYPES.includes(node.type)) {
+        node.type = 'process';
+      }
     }
   }
   return value;
@@ -189,19 +188,18 @@ async function loadFlow() {
   if (flowData) {
     return flowData;
   }
-  const uri = fileUri('flow', 'flow.json');
+  const uri = utilitiesUri('flow', 'flow.json');
   try {
     const bytes = await vscode.workspace.fs.readFile(uri);
     flowData = normalizeFlow(JSON.parse(new TextDecoder().decode(bytes)));
   } catch {
     flowData = defaultFlow();
-    await writeJson(uri, flowData);
   }
   return flowData;
 }
 
 async function saveFlow() {
-  await writeJson(fileUri('flow', 'flow.json'), flowData);
+  await writeJson(utilitiesUri('flow', 'flow.json'), flowData);
 }
 
 // ---------------------------------------------------------------- notes
@@ -215,11 +213,11 @@ function assetsFolderName() {
 }
 
 function notesDirUri() {
-  return fileUri(notesFolderName());
+  return storedUri(notesFolderName(), 'notes');
 }
 
 function assetsDirUri() {
-  return fileUri(assetsFolderName());
+  return storedUri(assetsFolderName(), 'notes/assets');
 }
 
 function resolveNote(relative) {
@@ -809,6 +807,42 @@ async function handleMessage(message, webview, context) {
         });
         break;
 
+      // ---- migration
+      case 'migrate-legacy': {
+        const result = await migrateLegacyStorage({
+          boards: utilitiesUri('boards', 'boards.json'),
+          flow: utilitiesUri('flow', 'flow.json'),
+          notes: notesDirUri(),
+          connections: connectionsFileUri(),
+          bookmarks: utilitiesUri('bookmarks', 'bookmarks.json'),
+        });
+        if (result.moved > 0) {
+          boardsData = null;
+          flowData = null;
+          store.invalidate();
+          bookmarksManager.invalidate();
+          await bookmarksManager.ensure();
+          bookmarksManager.decorateAll();
+          for (const other of webviews) {
+            try {
+              await sendBoardsState(other);
+              await sendFlowState(other);
+              other.postMessage({ type: 'notes-list', notes: await listNotes() });
+              await sendDbState(other);
+              other.postMessage({
+                type: 'bookmarks-state',
+                bookmarks: bookmarksManager.list(),
+                categories: CATEGORIES,
+              });
+            } catch {
+              // disposed
+            }
+          }
+        }
+        webview.postMessage({ type: 'migrate-result', moved: result.moved, failed: result.failed });
+        break;
+      }
+
       // ---- cross-tool actions
       case 'flow-to-board': {
         const items = Array.isArray(message.items) ? message.items.slice(0, 200) : [];
@@ -923,6 +957,10 @@ async function handleMessage(message, webview, context) {
     }
   } catch (error) {
     const text = error && error.message ? error.message : String(error);
+    if (message.type === 'migrate-legacy') {
+      webview.postMessage({ type: 'migrate-result', error: text });
+      return;
+    }
     const formTypes = ['db-saveConnection', 'db-browse', 'db-openFile'];
     let type = 'db-error';
     if (String(message.type || '').startsWith('notes-')) {

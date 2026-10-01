@@ -9,7 +9,7 @@ stored inside the folder you open, so it travels with the project and can be com
 | [`notes/`](notes) | Note taking: notes tree, daily notes, `[[wiki links]]`, image upload | `notes/`, `notes/assets/` |
 | [`flow/`](flow) | Flow charts and project planning: nodes, arrows, outlines | `flow/flow.json` |
 | [`database/`](database) | Database viewer/editor: SQLite, PostgreSQL, MySQL, SQL Server, CSV/TSV/JSON | `database/connections.json` + secrets |
-| [`workspace-tools/`](workspace-tools) | **All-in-one**: Boards, Notes, Flow and Database in one extension with tabs | same folders as above |
+| [`workspace-tools/`](workspace-tools) | **All-in-one**: Boards, Notes, Flow, Database and Bookmarks in one extension with tabs | one `<workspace-name>_utilities/` folder |
 
 ## Repo layout
 
@@ -17,7 +17,7 @@ stored inside the folder you open, so it travels with the project and can be com
 - `notes/` — **Notes** extension source
 - `flow/` — **Flow** extension source (flow charts & planning)
 - `database/` — **Database** extension source (SQLite, PostgreSQL, MySQL, SQL Server, CSV/TSV/JSON)
-- `workspace-tools/` — **Workspace Tools** all-in-one extension (Boards, Notes, Flow and Database behind one tab bar)
+- `workspace-tools/` — **Workspace Tools** all-in-one extension (Boards, Notes, Flow, Database and Bookmarks behind one tab bar; saves to `<workspace-name>_utilities/`)
 - `docs/` — GitHub Pages download page (Pages serves from the `/docs` folder)
 
 ## Download

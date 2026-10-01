@@ -4,7 +4,8 @@ All the workspace tools in one extension, with a tab bar:
 
 - **Boards** — kanban boards (`boards/boards.json`)
 - **Notes** — markdown notes with image insert and preview (`notes/`)
-- **Flow** — flow charts with labelled arrows and markdown-outline export (`flow/flow.json`)
+- **Flow** — flow charts with labelled arrows, 9 node shapes (right-click the canvas to choose),
+  connections on any side (top/left/right/bottom), and markdown-outline export (`flow/flow.json`)
 - **Database** — SQLite, PostgreSQL, MySQL/MariaDB, SQL Server, CSV/TSV/JSON (`database/connections.json`)
 - **Bookmarks** — bookmark a line or selection in the editor with a category and a comment;
   comments show inline, and the Bookmarks tab lists/filters them (`bookmarks/bookmarks.json`)
@@ -33,10 +34,12 @@ The tools work together — after each action the panel switches to the destinat
 - The **Bookmarks** tab lists everything — search, filter by category, sort by file/newest/oldest,
   edit comments, jump to the line (click the row) or delete.
 - Bookmarks track the code: if lines move, the snippet is found again automatically.
-- Everything saves to `bookmarks/bookmarks.json` in the workspace.
+- Everything saves to `bookmarks/bookmarks.json` inside the `<workspace-name>_utilities` folder.
 
-This build reuses the same storage folders as the individual extensions, so your existing data
-shows up as-is.
+All data lives in a single **`<workspace-name>_utilities/`** folder at the workspace root
+(`boards/`, `notes/`, `flow/`, `database/` and `bookmarks/` inside it, so nothing clutters the
+workspace root). The **Migrate** button at the top of the panel moves data from the old
+top-level folders into it — nothing is moved automatically.
 
 ## Run it
 
@@ -54,6 +57,8 @@ shows up as-is.
 - Database connections are managed from the Database tab (connection dropdown + inline form)
   instead of a tree view; the data grid and SQL console are unchanged.
 - Boards and Flow are the same UIs, scoped under their tabs.
+- Storage: every tool saves into one `<workspace-name>_utilities/` folder instead of the old
+  top-level `boards/`, `notes/`, `flow/`, `database/` and `bookmarks/` folders.
 
 ## Known limitations of this test build
 

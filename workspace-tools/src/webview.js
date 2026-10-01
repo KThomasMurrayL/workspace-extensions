@@ -28,6 +28,7 @@ function getHtml(webview, extensionUri) {
     <button class="app-tab" data-tab="flow">Flow</button>
     <button class="app-tab" data-tab="database">Database</button>
     <button class="app-tab" data-tab="bookmarks">Bookmarks</button>
+    <button id="app-btn-migrate" class="app-action" title="Move old top-level boards/, notes/, flow/, database/ and bookmarks/ data into the workspace\u2019s _utilities folder">Migrate</button>
   </nav>
 
   <div id="views">
@@ -140,7 +141,7 @@ function getHtml(webview, extensionUri) {
         <button id="flow-btn-rename-flow" title="Rename the current flow">Rename</button>
         <button id="flow-btn-delete-flow" class="danger" title="Delete the current flow">Delete</button>
         <span class="grow"></span>
-        <button id="flow-btn-new-node" class="primary" title="Add a node to the current flow">+ Node</button>
+        <button id="flow-btn-new-node" class="primary" title="Add a process node \u2014 right-click the canvas to choose other types">+ Node</button>
         <button id="flow-btn-outline" title="Copy this flow as a markdown outline">Copy outline</button>
         <button id="flow-btn-to-board" title="Create a board with one card per node">\u2192 Board</button>
         <button id="flow-btn-to-note" title="Save this flow as a note">\u2192 Note</button>
@@ -157,13 +158,14 @@ function getHtml(webview, extensionUri) {
           <button id="flow-btn-create-flow" class="primary">Create a flow</button>
         </div>
         <div id="flow-hint" class="hint hidden">
-          <p>Double-click anywhere to add your first node</p>
+          <p>Double-click to add a node, right-click to choose a shape</p>
         </div>
         <div id="flow-world" class="world">
           <svg id="flow-edges" class="edges" xmlns="http://www.w3.org/2000/svg"></svg>
           <div id="flow-nodes" class="nodes"></div>
         </div>
       </main>
+      <div id="flow-menu" class="flow-menu hidden" role="menu"></div>
       <div id="flow-input-overlay" class="overlay hidden">
         <div class="dialog small" role="dialog" aria-modal="true">
           <h3 id="flow-input-title">Input</h3>

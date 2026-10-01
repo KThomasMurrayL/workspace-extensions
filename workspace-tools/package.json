@@ -2,7 +2,7 @@
   "name": "workspace-tools",
   "displayName": "Workspace Tools",
   "description": "Boards, Notes, Flow and Database in one extension with tabs. Everything is stored in your workspace. Local test build.",
-  "version": "0.3.0",
+  "version": "0.8.0",
   "publisher": "local",
   "license": "MIT",
   "engines": {
@@ -123,12 +123,12 @@
         "workspaceTools.notesFolder": {
           "type": "string",
           "default": "notes",
-          "description": "Workspace-relative folder where notes are stored."
+          "description": "Folder where notes are stored, inside the <workspace>_utilities folder. Use an absolute path to store them elsewhere."
         },
         "workspaceTools.assetsFolder": {
           "type": "string",
           "default": "notes/assets",
-          "description": "Workspace-relative folder where inserted images are copied."
+          "description": "Folder where inserted images are copied, inside the <workspace>_utilities folder. Use an absolute path to store them elsewhere."
         },
         "workspaceTools.pageSize": {
           "type": "number",
@@ -138,7 +138,7 @@
         "workspaceTools.connectionsFile": {
           "type": "string",
           "default": "database/connections.json",
-          "description": "Workspace-relative file where connection settings (without passwords) are stored."
+          "description": "File where connection settings (without passwords) are stored, inside the <workspace>_utilities folder. Use an absolute path to store it elsewhere."
         }
       }
     }

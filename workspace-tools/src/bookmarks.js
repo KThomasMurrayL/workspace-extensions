@@ -1,6 +1,7 @@
 const vscode = require('vscode');
 const path = require('path');
 const crypto = require('crypto');
+const { utilitiesFolderName } = require('./store');
 
 const CATEGORIES = [
   { id: 'note', label: 'Note', color: '#4a9eff' },
@@ -55,7 +56,7 @@ class BookmarksManager {
   }
 
   fileUri() {
-    return vscode.Uri.joinPath(this.workspaceFolder().uri, 'bookmarks', 'bookmarks.json');
+    return vscode.Uri.joinPath(this.workspaceFolder().uri, utilitiesFolderName(), 'bookmarks', 'bookmarks.json');
   }
 
   uriFor(relative) {
@@ -64,6 +65,10 @@ class BookmarksManager {
 
   relativePath(uri) {
     return vscode.workspace.asRelativePath(uri, false).split(path.sep).join('/');
+  }
+
+  invalidate() {
+    this.data = null;
   }
 
   async ensure() {

@@ -33,10 +33,117 @@
     confirmText: document.getElementById('flow-confirm-text'),
     btnConfirmOk: document.getElementById('flow-btn-confirm-ok'),
     btnConfirmCancel: document.getElementById('flow-btn-confirm-cancel'),
+    menu: document.getElementById('flow-menu'),
   };
 
   const NODE_WIDTH = 170;
   const NODE_MIN_HEIGHT = 70;
+
+  const NODE_TYPES = [
+    { id: 'process', label: 'Process' },
+    { id: 'decision', label: 'Decision' },
+    { id: 'terminator', label: 'Start / End' },
+    { id: 'input', label: 'Input / Output' },
+    { id: 'database', label: 'Database' },
+    { id: 'document', label: 'Document' },
+    { id: 'note', label: 'Note' },
+    { id: 'hexagon', label: 'Preparation' },
+    { id: 'circle', label: 'Connector' },
+  ];
+  const DEFAULT_TYPE = 'process';
+  const TYPE_IDS = NODE_TYPES.map(type => type.id);
+  const SIDES = ['right', 'left', 'top', 'bottom'];
+
+  function nodeType(node) {
+    return TYPE_IDS.includes(node.type) ? node.type : DEFAULT_TYPE;
+  }
+
+  function typeLabel(type) {
+    const found = NODE_TYPES.find(candidate => candidate.id === type);
+    return found ? found.label : 'Process';
+  }
+
+  function roundedRectPath(w, h, r) {
+    const radius = Math.max(0, Math.min(r, w / 2, h / 2));
+    return [
+      `M ${radius} 1`,
+      `H ${w - radius}`,
+      `A ${radius} ${radius} 0 0 1 ${w - 1} ${radius}`,
+      `V ${h - radius}`,
+      `A ${radius} ${radius} 0 0 1 ${w - radius} ${h - 1}`,
+      `H ${radius}`,
+      `A ${radius} ${radius} 0 0 1 1 ${h - radius}`,
+      `V ${radius}`,
+      `A ${radius} ${radius} 0 0 1 ${radius} 1`,
+      'Z',
+    ].join(' ');
+  }
+
+  function shapeMarkup(type, w, h) {
+    switch (type) {
+      case 'decision':
+        return `<path class="node-outline" d="M ${w / 2} 1 L ${w - 1} ${h / 2} L ${w / 2} ${h - 1} L 1 ${h / 2} Z"></path>`;
+      case 'terminator':
+        return `<path class="node-outline" d="${roundedRectPath(w, h, (h - 2) / 2)}"></path>`;
+      case 'input': {
+        const slant = Math.min(w * 0.18, 30);
+        return `<path class="node-outline" d="M ${slant + 1} 1 H ${w - 1} L ${w - slant - 1} ${h - 1} H 1 Z"></path>`;
+      }
+      case 'database': {
+        const rx = (w - 2) / 2;
+        const ry = Math.min(h * 0.22, 13);
+        return (
+          `<path class="node-outline" d="M 1 ${ry + 1} A ${rx} ${ry} 0 0 1 ${w - 1} ${ry + 1} ` +
+          `L ${w - 1} ${h - ry - 1} A ${rx} ${ry} 0 0 1 1 ${h - ry - 1} Z"></path>` +
+          `<path class="node-detail" d="M 1 ${ry + 1} A ${rx} ${ry} 0 0 0 ${w - 1} ${ry + 1}"></path>`
+        );
+      }
+      case 'document':
+        return (
+          `<path class="node-outline" d="M 7 1 H ${w - 7} Q ${w - 1} 1 ${w - 1} 7 V ${h - 10} ` +
+          `C ${w * 0.83} ${h - 2} ${w * 0.67} ${h - 18} ${w / 2} ${h - 10} ` +
+          `C ${w * 0.33} ${h - 2} ${w * 0.17} ${h - 18} 1 ${h - 10} Z"></path>`
+        );
+      case 'note':
+        return (
+          `<path class="node-outline" d="M 7 1 H ${w - 16} L ${w - 1} 16 V ${h - 7} ` +
+          `Q ${w - 1} ${h - 1} ${w - 7} ${h - 1} H 7 Q 1 ${h - 1} 1 ${h - 7} V 7 Q 1 1 7 1 Z"></path>` +
+          `<path class="node-detail" d="M ${w - 16} 1 V 16 H ${w - 1}"></path>`
+        );
+      case 'hexagon': {
+        const s = Math.min(w * 0.16, 30);
+        return `<path class="node-outline" d="M ${s + 1} 1 H ${w - s - 1} L ${w - 1} ${h / 2} L ${w - s - 1} ${h - 1} H ${s + 1} L 1 ${h / 2} Z"></path>`;
+      }
+      case 'circle':
+        return `<ellipse class="node-outline" cx="${w / 2}" cy="${h / 2}" rx="${w / 2 - 1}" ry="${h / 2 - 1}"></ellipse>`;
+      case 'process':
+      default:
+        return `<path class="node-outline" d="${roundedRectPath(w, h, 10)}"></path>`;
+    }
+  }
+
+  function setShapeMarkup(svg, markup) {
+    try {
+      svg.innerHTML = markup;
+    } catch {
+      // some DOM implementations reject innerHTML on SVG elements
+    }
+    if (!svg.childNodes.length) {
+      const tmp = document.createElement('div');
+      tmp.innerHTML = `<svg>${markup}</svg>`;
+      svg.replaceChildren(...Array.from(tmp.firstChild.childNodes));
+    }
+  }
+
+  function applyShape(node, el) {
+    const svg = el.querySelector('.node-shape');
+    if (!svg) {
+      return;
+    }
+    const rect = getRect(node);
+    svg.setAttribute('viewBox', `0 0 ${rect.w} ${rect.h}`);
+    setShapeMarkup(svg, shapeMarkup(nodeType(node), rect.w, rect.h));
+  }
 
   let state = { version: 1, flows: [], lastFlowId: null };
   let view = { x: 40, y: 40, scale: 1 };
@@ -220,6 +327,7 @@
           w: el.offsetWidth || NODE_WIDTH,
           h: el.offsetHeight || NODE_MIN_HEIGHT,
         });
+        applyShape(node, el);
       }
     }
   }
@@ -230,22 +338,31 @@
     el.style.left = node.x + 'px';
     el.style.top = node.y + 'px';
     el.dataset.nodeId = node.id;
+    el.dataset.type = nodeType(node);
+
+    const shape = document.createElementNS(NS, 'svg');
+    shape.setAttribute('class', 'node-shape');
+    shape.setAttribute('aria-hidden', 'true');
 
     const text = document.createElement('div');
     text.className = 'node-text';
     text.textContent = node.text || 'Node';
-
-    const port = document.createElement('div');
-    port.className = 'node-port';
-    port.title = 'Drag to another node to connect';
 
     const remove = document.createElement('button');
     remove.className = 'node-delete';
     remove.textContent = '\u2715';
     remove.title = 'Delete node';
 
+    el.appendChild(shape);
     el.appendChild(text);
-    el.appendChild(port);
+    for (const side of SIDES) {
+      const port = document.createElement('div');
+      port.className = `node-port side-${side}`;
+      port.dataset.side = side;
+      port.title = 'Drag to another node to connect';
+      port.addEventListener('pointerdown', event => startConnect(event, node, side));
+      el.appendChild(port);
+    }
     el.appendChild(remove);
 
     el.addEventListener('pointerdown', event => onNodePointerDown(event, node, el));
@@ -255,7 +372,6 @@
       }
       startEditNode(node, el, false);
     });
-    port.addEventListener('pointerdown', event => startConnect(event, node));
     remove.addEventListener('pointerdown', event => event.stopPropagation());
     remove.addEventListener('click', event => {
       event.stopPropagation();
@@ -330,6 +446,7 @@
       textEl.style.visibility = '';
       textEl.textContent = node.text || 'Node';
       rects.set(node.id, { w: el.offsetWidth, h: el.offsetHeight });
+      applyShape(node, el);
       drawEdges();
       if (save) {
         queueSave();
@@ -365,25 +482,56 @@
     });
   }
 
-  function anchorFor(node, towards) {
+  function sideAnchorAt(node, side, t) {
     const rect = getRect(node);
-    const center = nodeCenter(node);
-    const dx = towards.x - center.x;
-    const dy = towards.y - center.y;
-    if (Math.abs(dx) >= Math.abs(dy)) {
-      return {
-        x: dx >= 0 ? node.x + rect.w : node.x,
-        y: center.y,
-        dir: 'h',
-        sign: dx >= 0 ? 1 : -1,
-      };
+    switch (side) {
+      case 'left':
+        return { x: node.x, y: node.y + rect.h * t, dir: 'h', sign: -1 };
+      case 'top':
+        return { x: node.x + rect.w * t, y: node.y, dir: 'v', sign: -1 };
+      case 'bottom':
+        return { x: node.x + rect.w * t, y: node.y + rect.h, dir: 'v', sign: 1 };
+      case 'right':
+      default:
+        return { x: node.x + rect.w, y: node.y + rect.h * t, dir: 'h', sign: 1 };
     }
-    return {
-      x: center.x,
-      y: dy >= 0 ? node.y + rect.h : node.y,
-      dir: 'v',
-      sign: dy >= 0 ? 1 : -1,
-    };
+  }
+
+  function sideAnchor(node, side) {
+    return sideAnchorAt(node, side, 0.5);
+  }
+
+  function oppositeSide(side) {
+    switch (side) {
+      case 'left':
+        return 'right';
+      case 'right':
+        return 'left';
+      case 'top':
+        return 'bottom';
+      default:
+        return 'top';
+    }
+  }
+
+  function sideForPoint(node, point) {
+    const center = nodeCenter(node);
+    const dx = point.x - center.x;
+    const dy = point.y - center.y;
+    if (Math.abs(dx) + Math.abs(dy) < 6) {
+      return null;
+    }
+    if (Math.abs(dx) >= Math.abs(dy)) {
+      return dx >= 0 ? 'right' : 'left';
+    }
+    return dy >= 0 ? 'bottom' : 'top';
+  }
+
+  function anchorFor(node, towards, side) {
+    if (SIDES.includes(side)) {
+      return sideAnchor(node, side);
+    }
+    return sideAnchor(node, sideForPoint(node, towards) || 'right');
   }
 
   function bezierPoint(p0, c1, c2, p1, t) {
@@ -394,14 +542,55 @@
     };
   }
 
-  function computeEdge(edge, flow) {
+  function resolvedSide(node, towards, side) {
+    if (SIDES.includes(side)) {
+      return side;
+    }
+    return sideForPoint(node, towards) || 'right';
+  }
+
+  function resolveAnchors(flow) {
+    const groups = new Map();
+    for (const edge of flow.edges) {
+      const from = findNode(flow, edge.from);
+      const to = findNode(flow, edge.to);
+      if (!from || !to) {
+        continue;
+      }
+      const fromSide = resolvedSide(from, nodeCenter(to), edge.fromSide);
+      const toSide = resolvedSide(to, nodeCenter(from), edge.toSide);
+      for (const entry of [{ nodeId: from.id, side: fromSide, end: 'a' }, { nodeId: to.id, side: toSide, end: 'b' }]) {
+        const key = `${entry.nodeId}|${entry.side}`;
+        if (!groups.has(key)) {
+          groups.set(key, []);
+        }
+        groups.get(key).push({ edgeId: edge.id, end: entry.end });
+      }
+    }
+    const anchors = new Map();
+    for (const [key, items] of groups) {
+      const separator = key.lastIndexOf('|');
+      const node = findNode(flow, key.slice(0, separator));
+      if (!node) {
+        continue;
+      }
+      const side = key.slice(separator + 1);
+      items.forEach((item, index) => {
+        const t = items.length === 1 ? 0.5 : 0.2 + 0.6 * (index / (items.length - 1));
+        anchors.set(`${item.edgeId}|${item.end}`, sideAnchorAt(node, side, t));
+      });
+    }
+    return anchors;
+  }
+
+  function computeEdge(edge, flow, anchors) {
     const from = findNode(flow, edge.from);
     const to = findNode(flow, edge.to);
     if (!from || !to) {
       return null;
     }
-    const a = anchorFor(from, nodeCenter(to));
-    const b = anchorFor(to, nodeCenter(from));
+    const a = (anchors && anchors.get(`${edge.id}|a`)) || anchorFor(from, nodeCenter(to), edge.fromSide);
+    const b = (anchors && anchors.get(`${edge.id}|b`)) || anchorFor(to, nodeCenter(from), edge.toSide);
     const span = Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
     const offset = Math.max(40, Math.min(120, span * 0.35));
     let c1;
@@ -449,8 +638,9 @@
       '<path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke"></path></marker></defs>';
 
     const parts = [defs];
+    const anchors = resolveAnchors(flow);
     for (const edge of flow.edges) {
-      const geometry = computeEdge(edge, flow);
+      const geometry = computeEdge(edge, flow, anchors);
       if (!geometry) {
         continue;
       }
@@ -498,7 +688,15 @@
     });
   }
 
-  function startConnect(event, node) {
+  function nodeElementFromPoint(clientX, clientY) {
+    if (typeof document.elementFromPoint !== 'function') {
+      return null;
+    }
+    const element = document.elementFromPoint(clientX, clientY);
+    return element && element.closest ? element.closest('.node') : null;
+  }
+
+  function startConnect(event, node, side) {
     if (event.button !== 0) {
       return;
     }
@@ -507,29 +705,45 @@
     const temp = document.createElementNS(NS, 'path');
     temp.setAttribute('class', 'edge-path temp');
     els.edges.appendChild(temp);
+    const start = sideAnchor(node, side);
+    let hovered = null;
+
+    const setHover = element => {
+      if (hovered === element) {
+        return;
+      }
+      if (hovered) {
+        hovered.classList.remove('connect-target');
+      }
+      hovered = element;
+      if (hovered) {
+        hovered.classList.add('connect-target');
+      }
+    };
 
     const onMove = moveEvent => {
       const point = clientToWorld(moveEvent.clientX, moveEvent.clientY);
-      const anchor = anchorFor(node, point);
       const offset = 60;
       let c1;
       let c2;
-      if (anchor.dir === 'h') {
-        c1 = { x: anchor.x + offset * anchor.sign, y: anchor.y };
+      if (start.dir === 'h') {
+        c1 = { x: start.x + offset * start.sign, y: start.y };
         c2 = { x: point.x - offset, y: point.y };
       } else {
-        c1 = { x: anchor.x, y: anchor.y + offset * anchor.sign };
+        c1 = { x: start.x, y: start.y + offset * start.sign };
         c2 = { x: point.x, y: point.y - offset };
       }
-      temp.setAttribute('d', `M ${anchor.x} ${anchor.y} C ${c1.x} ${c1.y} ${c2.x} ${c2.y} ${point.x} ${point.y}`);
+      temp.setAttribute('d', `M ${start.x} ${start.y} C ${c1.x} ${c1.y} ${c2.x} ${c2.y} ${point.x} ${point.y}`);
+      const over = nodeElementFromPoint(moveEvent.clientX, moveEvent.clientY);
+      setHover(over && over.dataset.nodeId !== node.id ? over : null);
     };
 
     const onUp = upEvent => {
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onUp);
       temp.remove();
-      const target = document.elementFromPoint(upEvent.clientX, upEvent.clientY);
-      const targetEl = target && target.closest ? target.closest('.node') : null;
+      setHover(null);
+      const targetEl = nodeElementFromPoint(upEvent.clientX, upEvent.clientY);
       const flow = currentFlow();
       if (!flow || !targetEl) {
         return;
@@ -538,10 +752,13 @@
       if (!toId || toId === node.id) {
         return;
       }
-      if (flow.edges.some(edge => edge.from === node.id && edge.to === toId)) {
+      const targetNode = findNode(flow, toId);
+      if (!targetNode) {
         return;
       }
-      flow.edges.push({ id: uid(), from: node.id, to: toId, label: '' });
+      const dropPoint = clientToWorld(upEvent.clientX, upEvent.clientY);
+      const toSide = sideForPoint(targetNode, dropPoint) || oppositeSide(side);
+      flow.edges.push({ id: uid(), from: node.id, to: toId, label: '', fromSide: side, toSide });
       queueSave();
       renderCanvas();
     };
@@ -582,13 +799,20 @@
     return { x: x + 400, y: y + 400 };
   }
 
-  function addNodeAt(x, y, edit) {
+  function addNodeAt(x, y, edit, type) {
     const flow = currentFlow();
     if (!flow) {
       return;
     }
+    const nodeTypeId = TYPE_IDS.includes(type) ? type : DEFAULT_TYPE;
     const spot = findFreeSpot(flow, Math.round(x), Math.round(y));
-    const node = { id: uid(), x: spot.x, y: spot.y, text: 'New node' };
+    const node = {
+      id: uid(),
+      x: spot.x,
+      y: spot.y,
+      text: nodeTypeId === DEFAULT_TYPE ? 'New node' : typeLabel(nodeTypeId),
+      type: nodeTypeId,
+    };
     flow.nodes.push(node);
     queueSave();
     renderCanvas();
@@ -611,6 +835,67 @@
     const rect = els.canvas.getBoundingClientRect();
     const point = clientToWorld(rect.left + rect.width / 2, rect.top + rect.height / 2);
     addNodeAt(point.x - NODE_WIDTH / 2, point.y - NODE_MIN_HEIGHT / 2, true);
+  }
+
+  // ------------------------------------------------------------ node menu
+
+  let menuTarget = null;
+  let menuAddPoint = null;
+
+  function closeFlowMenu() {
+    if (!els.menu || els.menu.classList.contains('hidden')) {
+      return;
+    }
+    els.menu.classList.add('hidden');
+    els.menu.innerHTML = '';
+    menuTarget = null;
+    menuAddPoint = null;
+  }
+
+  function openFlowMenu(clientX, clientY, node) {
+    menuTarget = node || null;
+    menuAddPoint = node ? null : clientToWorld(clientX, clientY);
+    const parts = [`<div class="flow-menu-title">${node ? 'Change type' : 'Add node'}</div>`];
+    for (const type of NODE_TYPES) {
+      const active = node && nodeType(node) === type.id ? ' active' : '';
+      parts.push(
+        `<button class="flow-menu-item${active}" data-flow-type="${type.id}">` +
+          `<svg viewBox="0 0 22 15" xmlns="${NS}">${shapeMarkup(type.id, 22, 15)}</svg>` +
+          `<span>${esc(type.label)}</span>` +
+        '</button>'
+      );
+    }
+    els.menu.innerHTML = parts.join('');
+    els.menu.classList.remove('hidden');
+    const rect = els.menu.getBoundingClientRect();
+    let x = clientX;
+    let y = clientY;
+    if (rect.width && x + rect.width > window.innerWidth - 8) {
+      x = Math.max(8, window.innerWidth - rect.width - 8);
+    }
+    if (rect.height && y + rect.height > window.innerHeight - 8) {
+      y = Math.max(8, window.innerHeight - rect.height - 8);
+    }
+    els.menu.style.left = x + 'px';
+    els.menu.style.top = y + 'px';
+  }
+
+  function chooseFlowType(type) {
+    if (!TYPE_IDS.includes(type)) {
+      return;
+    }
+    const node = menuTarget;
+    const point = menuAddPoint;
+    closeFlowMenu();
+    if (node) {
+      node.type = type;
+      queueSave();
+      renderCanvas();
+      return;
+    }
+    if (point) {
+      addNodeAt(point.x - NODE_WIDTH / 2, point.y - NODE_MIN_HEIGHT / 2, false, type);
+    }
   }
 
   function buildOutline(flow) {
@@ -872,7 +1157,42 @@
     addNodeAt(point.x - NODE_WIDTH / 2, point.y - NODE_MIN_HEIGHT / 2, true);
   });
 
+  els.canvas.addEventListener('contextmenu', event => {
+    const flow = currentFlow();
+    if (!flow || event.target.closest('.node-delete, .node-port')) {
+      return;
+    }
+    const nodeEl = event.target.closest('.node');
+    if (nodeEl) {
+      const node = findNode(flow, nodeEl.dataset.nodeId);
+      if (node) {
+        event.preventDefault();
+        openFlowMenu(event.clientX, event.clientY, node);
+      }
+      return;
+    }
+    if (event.target.closest('.edge')) {
+      return;
+    }
+    event.preventDefault();
+    openFlowMenu(event.clientX, event.clientY, null);
+  });
+
+  els.menu.addEventListener('click', event => {
+    const item = event.target.closest('[data-flow-type]');
+    if (item) {
+      chooseFlowType(item.dataset.flowType);
+    }
+  });
+
+  document.addEventListener('pointerdown', event => {
+    if (!els.menu.classList.contains('hidden') && !els.menu.contains(event.target)) {
+      closeFlowMenu();
+    }
+  }, true);
+
   els.canvas.addEventListener('wheel', event => {
+    closeFlowMenu();
     if (event.ctrlKey || event.metaKey) {
       event.preventDefault();
       zoomAt(Math.exp(-event.deltaY * 0.002), event.clientX, event.clientY);
@@ -930,7 +1250,9 @@
     if (event.key !== 'Escape') {
       return;
     }
-    if (!els.confirmOverlay.classList.contains('hidden')) {
+    if (!els.menu.classList.contains('hidden')) {
+      closeFlowMenu();
+    } else if (!els.confirmOverlay.classList.contains('hidden')) {
       hideConfirm();
     } else if (!els.inputOverlay.classList.contains('hidden')) {
       hideInput();
@@ -939,6 +1261,7 @@
 
   document.addEventListener('tab-shown', event => {
     if (!event.detail || event.detail.tab !== 'flow') {
+      closeFlowMenu();
       return;
     }
     if (!hasState) {
